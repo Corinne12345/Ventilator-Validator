@@ -1,0 +1,317 @@
+
+classdef Tester < handle
+    
+    properties
+        sam_rate = .05
+        %Errors for FlowLab
+        erFLflow = .05 %(sl/min)
+        erFLvol = .01 %sl
+        erFLdp = .1 %mbar
+        erFLfreq = 1 %bpm
+        erFLcomp = 1 %ml/mbar
+        errorTable
+        
+        newFile
+        size
+        x1
+        x2
+        x0
+        int
+        
+        nalm_Data
+        lab_Data
+        T_n
+        T_l
+        period
+        scale_fac      
+        
+            
+    end
+    
+    methods
+        function obj = Tester(nalm_Data, lab_Data, T_n, T_l, period) 
+        
+            obj.nalm_Data = nalm_Data;
+            obj.lab_Data = lab_Data;
+            obj.T_n = T_n;
+            obj.T_l = T_l;
+            obj.period = period;
+
+            fileTrimmer(obj);
+            
+            setFile(obj); 
+            delayCalc(obj);
+            labDataScaler(obj);       
+                        
+            variableCompare(obj);           
+           
+    
+     
+        end       
+        
+        function variableCompare(obj)
+            
+            seconds = 40;
+            obj.int = seconds/obj.sam_rate;
+            
+            obj.x1 = obj.newFile{1:obj.int,1};
+            obj.x2 = obj.newFile{1:obj.int,5};
+            obj.x0 = 0:0.01:seconds;
+            
+        end
+        
+        function flowPlotter(obj)
+           
+            y1 = obj.newFile{1:obj.int,2};
+            y2 = obj.newFile{1:obj.int,6};
+            
+            y10 = interp1(obj.x1,y1,obj.x0);
+            y20 = interp1(obj.x2, y2, obj.x0); 
+            
+            %correlation
+            %[R1, P1] = corrcoef(y10,y20);           
+            
+            figure
+                     
+            plot(obj.x0, y10)
+            title("Flow Comparison test")
+            xlabel("Time (s)")
+            ylabel("Flow (l/min)")                         
+           
+            hold on
+            plot(obj.x0, y20)            
+            legend({"FlowLab", "NALM"});  
+                       
+            hold off 
+            grid
+        end
+        
+        function pressurePlotter(obj)
+                       
+            figure             
+            y1 = -1*obj.newFile{1:obj.int, 2};
+            y2 = obj.newFile{1:obj.int, 7};
+            
+            y10 = interp1(obj.x1,y1,obj.x0);
+            y20 = interp1(obj.x2, y2, obj.x0);  
+            
+            
+            plot(obj.x0, y10)
+            title("Pressure comparison test")
+            xlabel("Time (s)")
+            ylabel("Pressure")
+            
+            hold on
+            plot(obj.x0, y20)
+            legend({"FlowLab", "NALM"});
+            
+            hold off  
+            grid
+            
+           
+        end    
+        
+        function volumePlotter(obj)
+            figure
+            y1 = obj.newFile{1:obj.int, 3};
+            y2 = obj.newFile{1:obj.int, 8};
+            
+            y10 = interp1(obj.x1,y1,obj.x0);
+            y20 = interp1(obj.x2, y2, obj.x0);  
+            
+            plot(obj.x0, y10)
+            title("Volume comparison test")
+            xlabel("Time (s)")
+            ylabel("Volume")
+            
+            hold on
+            plot(obj.x0, y20)
+            legend({"FlowLab", "NALM"});
+            
+            hold off  
+            grid
+        end
+        
+        function peepPlotter(obj)
+        end
+        
+        function peakPlotter(obj)
+        end
+        
+        function setFile(obj)
+            %set time back to 0 for nalmdata
+           t1 =  obj.nalm_Data{1,1};         
+           for i = 1:height(obj.nalm_Data)
+                x =  obj.nalm_Data{i,1}-t1;
+                obj.nalm_Data{i,1} = x;
+           end
+           
+           t2 = obj.lab_Data{1,1};
+           for i = 1:height(obj.lab_Data)
+               x= (obj.lab_Data{i,1}-t2);
+               obj.lab_Data{i,1} = x;
+               
+           end           
+           
+           obj.newFile = [obj.lab_Data obj.nalm_Data];
+           head(obj.newFile)
+           
+           obj.size = height(obj.newFile);
+           
+        end  
+        
+        function labDataScaler(obj)
+            for i = 1:obj.size
+                x_old = obj.newFile{i, 1};
+                x_new = x_old*(1 + obj.scale_fac(1));
+                obj.newFile{i, 1} = x_new;
+            end
+        end                
+        
+        function fileTrimmer(obj)
+
+            %Trims both to same start time             
+            time_interval = etime(obj.T_l, obj.T_n);
+            if (time_interval > 30)
+                error('time interval can not be more than 30s');                
+            end
+                        
+            rows_to_delete = time_interval/obj.sam_rate -3;       
+                                  
+            obj.nalm_Data(1:rows_to_delete, :) = [];    
+            
+            %{
+            
+            plot(obj.nalm_Data{:,1}, obj.nalm_Data{:,2});
+            
+            hold on
+            plot(obj.lab_Data{:,1}, obj.lab_Data{:,2});
+            %}
+           
+                       
+            %trim nalm to first positive grad
+
+            f_nalm = table2array(obj.nalm_Data(:,2));
+            t_nalm = table2array(obj.nalm_Data(:,1)) ;
+            
+            
+            i_n = 1;
+
+            for i = 4:length(t_nalm)
+                y4 = f_nalm(i);
+                y3 = f_nalm(i-1);
+                y2 = f_nalm(i-2);
+                y1 = f_nalm(i-3);
+                x4 = t_nalm(i);
+                x3 = t_nalm(i-1);
+                x_2 = t_nalm(i-2);
+                x_1 = t_nalm(i-3);
+                if  (y4-y3)/(x4-x3)> 20 && (y3-y2)/(x3-x_2)> 10 && abs((y2-y1)/(x_2-x_1)) <=5
+                    i_n = i-3;
+                    break                
+                end
+            end
+            
+            obj.nalm_Data(1:i_n, :) = [];
+
+         
+
+            %trim flowLab to first positive grad
+            f_lab = table2array(obj.lab_Data(:,2));
+            t_lab = table2array(obj.lab_Data(:,1));
+            
+            il = 1;
+
+            for i = 4:length(t_lab)
+                y4 = f_lab(i);
+                y3 = f_lab(i-1);
+                y2 = f_lab(i-2);
+                y1 = f_lab(i-3);
+                x4 = t_lab(i);
+                x3 = t_lab(i-1);
+                x_2 = t_lab(i-2);
+                x_1 = t_lab(i-3);
+                
+                if (y4-y3)/(x4-x3)> 20 && (y3-y2)/(x3-x_2)> 10 && abs((y2-y1)/(x_2-x_1)) <=5
+                   il = i-3;
+                   break
+                end
+            end
+            
+            obj.lab_Data(1:il, :) = [];
+            
+           
+            %Trim both to same end time
+            len_nalm = height(obj.nalm_Data);            
+            len_lab = height(obj.lab_Data);
+
+            diff_len = len_nalm - len_lab - 1;
+                       
+            if(diff_len > 0)
+                %delete the extra cells off nalm_Data
+                obj.nalm_Data((len_nalm - diff_len):len_nalm, :) = [];
+            elseif(diff_len < 0)
+                %same for nalm
+                obj.lab_Data((len_lab - diff_lab):len_nalm, :) = [];
+            end
+            
+            %append data so time signatures start at 0
+            
+            
+            
+        end        
+        
+        function delayCalc(obj)
+            
+            
+            f_lab = table2array(obj.newFile(:,2));
+            t_lab = table2array(obj.newFile(:,1));
+            [pks_l, locs_l] = findpeaks(f_lab, t_lab, 'MinPeakProminence', 3.5);
+                       
+            t_nalm = table2array(obj.newFile(:,5));
+            f_nalm = table2array(obj.newFile(:,6)) ;
+                        
+            [pks_n, locs_n] = findpeaks(f_nalm, t_nalm, 'MinPeakProminence', 3.5 );          
+           
+            
+            diff = length(locs_n)- length(locs_l);
+            
+            if diff > 0
+                locs_n((length(locs_n)-diff +1):length(locs_n), :) = [];
+            elseif diff < 0
+                locs_l((length(locs_l) - diff +1):length(locs_l),:) = [];
+            end
+            
+            length(locs_n)
+            length(locs_l)     
+            
+                       
+                        
+            loc_diff = locs_n - locs_l;
+            x = transpose(0:length(loc_diff)-1); 
+            p = polyfit(x, loc_diff, 1);            
+            
+            %{
+            figure          
+            plot(x,loc_diff);
+            title("Delay Character")
+            xlabel("Samples")
+            ylabel("Time diff (s)")
+            hold on
+            
+            x1 = linspace(0, length(loc_diff));
+            y1 = polyval(p, x1);
+            plot(x1, y1);
+            hold off;
+            grid     
+            %}
+                        
+            obj.scale_fac = p(1);           
+                        
+            
+        end
+    
+    end
+end
+
+    

@@ -1,11 +1,18 @@
 % This is the main file that calls on the data and spits the stuff out
-
+close all
 clear;
 clc;
 
-    % Import the data. 
-   FileValidiser;
+% USER DON'T TOUCH THIS
+
+    % Import the data.    
+   a_vent = readtable('b_vent.xlsx', 'Range', 'A1:C60001');
+   head(a_vent, 100)
+   %b_vent = readtable('b_vent.xlsx', 'Range', 'A1:C60001'); 
+     
+   %FileValidator;
    
+   % Global variables
    global file_nalm;
    global file_lab;
    global f;
@@ -14,12 +21,11 @@ clc;
    global vol_check;
    global peep_check;
    global peak_check;
+   global infantData;
+   global presVol;
       
-   period = 1/f(1,1);
-    
-    
-    
-% USER DON'T TOUCH THIS
+   period = 1/f(1,1);          
+
 
 % Get the timestamps
     %nalm:
@@ -47,9 +53,9 @@ lab_Data  = removevars(lab_Data, {'FlowHigh_l_min_'});
 lab_Data.Properties.VariableNames = {'Time_lab', 'Flow_lab', 'P_diff_lab', 'Vol_tid_lab'};
 %head(lab_Data);
 for i = 1:height(lab_Data)
-    y = (-1)*lab_Data{i,2};
+    %y = (-1)*lab_Data{i,2};
     z = (-1)*lab_Data{i,3};
-    lab_Data{i,2} = y;
+    %lab_Data{i,2} = y;
     lab_Data{i,3} = z;
 end
 
@@ -78,9 +84,19 @@ end
 if peep_check == 1
     peepPlotter(test1)
 end
-if peak_check ==1
-    peakPlotter(test1)
+if infantData ==1
+    infantDataCollector(test1, a_vent)
 end
+if peak_check ==1
+    peakPlotter(test1, infantData)
+end
+
+if presVol == 1
+    pressVolCurve(test1, infantData)
+end
+
+
+
 
 
 

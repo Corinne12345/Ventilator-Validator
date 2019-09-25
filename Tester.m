@@ -16,15 +16,19 @@ classdef Tester < handle
         x1
         x2
         x0
+        y2p
+        y2v
         int
+        vent %pressure is col2, volume is col4
         
         nalm_Data
         lab_Data
         T_n
         T_l
         period
-        scale_fac      
+        scale_fac 
         
+        valid = 1; %changes to 1 if test is valid       
             
     end
     
@@ -43,9 +47,8 @@ classdef Tester < handle
             delayCalc(obj);
             labDataScaler(obj);       
                         
-            variableCompare(obj);           
-           
-    
+            variableCompare(obj);         
+               
      
         end       
         
@@ -89,20 +92,20 @@ classdef Tester < handle
         function pressurePlotter(obj)
                        
             figure             
-            y1 = -1*obj.newFile{1:obj.int, 2};
+            y1 = -1*obj.newFile{1:obj.int, 3};
             y2 = obj.newFile{1:obj.int, 7};
             
             y10 = interp1(obj.x1,y1,obj.x0);
-            y20 = interp1(obj.x2, y2, obj.x0);  
+            obj.y2p = interp1(obj.x2, y2, obj.x0);  
             
             
             plot(obj.x0, y10)
             title("Pressure comparison test")
             xlabel("Time (s)")
-            ylabel("Pressure")
+            ylabel("Pressure (mbar)")
             
             hold on
-            plot(obj.x0, y20)
+            plot(obj.x0, obj.y2p)
             legend({"FlowLab", "NALM"});
             
             hold off  
@@ -113,24 +116,51 @@ classdef Tester < handle
         
         function volumePlotter(obj)
             figure
-            y1 = obj.newFile{1:obj.int, 3};
+            y1 = obj.newFile{1:obj.int, 4};
             y2 = obj.newFile{1:obj.int, 8};
             
-            y10 = interp1(obj.x1,y1,obj.x0);
-            y20 = interp1(obj.x2, y2, obj.x0);  
+            y10 = interp1(obj.x1,y1,obj.x0);                    
+            
+            obj.y2v = interp1(obj.x2, y2, obj.x0);  
             
             plot(obj.x0, y10)
             title("Volume comparison test")
             xlabel("Time (s)")
-            ylabel("Volume")
+            ylabel("Volume (ml)")
             
             hold on
-            plot(obj.x0, y20)
+            plot(obj.x0, obj.y2v)
             legend({"FlowLab", "NALM"});
             
             hold off  
             grid
         end
+        
+        function pressVolCurve(obj, infantData)
+            if obj.valid == 1
+                figure
+                x = obj.y2p;
+                y = obj.y2v;
+                plot(x,y)
+                title("Pressure Volume Curve")
+                xlabel("Pressure (mbar)")
+                ylabel("Volume (ml)")
+                if infantData == 1
+                     hold on
+                     xi = obj.vent{:,3};
+                     yi = obj.vent{:,4};
+                     plot(xi,yi)
+                     legend({"NALM", "Infant Data"})
+                     %plot infantData, get data from infantDataCollector
+                 
+                     hold off
+                     
+                end
+                grid                
+            end             
+                
+        end   
+        
         
         function peepPlotter(obj)
         end
@@ -140,6 +170,7 @@ classdef Tester < handle
         
         function setFile(obj)
             %set time back to 0 for nalmdata
+           offset = 0;
            t1 =  obj.nalm_Data{1,1};         
            for i = 1:height(obj.nalm_Data)
                 x =  obj.nalm_Data{i,1}-t1;
@@ -149,12 +180,25 @@ classdef Tester < handle
            t2 = obj.lab_Data{1,1};
            for i = 1:height(obj.lab_Data)
                x= (obj.lab_Data{i,1}-t2);
-               obj.lab_Data{i,1} = x;
+               obj.lab_Data{i,1} = x; 
+               
+               %offset volume
+               if offset == 0
+                   
+                   if obj.lab_Data{i,4} < 0 && abs((obj.lab_Data{i+1,4} - obj.lab_Data{i,4})/.05)<0.2
+                       offset = obj.lab_Data{i,4};
+                   end
+               end               
+                              
+               %value = obj.lab_Data{i,4};
+               %obj.lab_Data{i,4} = value + offset;               
                
            end           
-           
-           obj.newFile = [obj.lab_Data obj.nalm_Data];
+         
+                      
+           obj.newFile = [obj.lab_Data obj.nalm_Data];   
            head(obj.newFile)
+           
            
            obj.size = height(obj.newFile);
            
@@ -279,7 +323,7 @@ classdef Tester < handle
             if diff > 0
                 locs_n((length(locs_n)-diff +1):length(locs_n), :) = [];
             elseif diff < 0
-                locs_l((length(locs_l) - diff +1):length(locs_l),:) = [];
+                locs_l((length(locs_l) - diff -1):length(locs_l),:) = [];
             end
             
             length(locs_n)
@@ -306,10 +350,27 @@ classdef Tester < handle
             grid     
             %}
                         
-            obj.scale_fac = p(1);           
-                        
+            obj.scale_fac = p(1);          
+                 
+        end
+        
+        function infantDataCollector(obj, a_vent)
+            dt = 0.001;  
+            t0 = a_vent{1,1};
+            for i = 1:height(a_vent)
+                t = a_vent{i,1};
+                a_vent{i,1} = t - t0;
+                
+                flow = a_vent{i,2};                
+                vol = 1000/60*flow*dt;
+                a_vent{i,4} = vol;                
+            end
+            
+            obj.vent = a_vent;
             
         end
+            
+        
     
     end
 end

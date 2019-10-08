@@ -1,32 +1,25 @@
 % This is the main file that calls on the data and spits the stuff out
-close all
 clear;
 clc;
 
 % USER DON'T TOUCH THIS
 
     % Import the data.    
-   a_vent = readtable('b_vent.xlsx', 'Range', 'A1:C60001');
-   head(a_vent, 100)
-   %b_vent = readtable('b_vent.xlsx', 'Range', 'A1:C60001'); 
-     
-   %FileValidator;
-   
+   a_vent = readtable('b_vent.xlsx', 'Range', 'A1:C60001');   
+      
    % Global variables
    global file_nalm;
    global file_lab;
    global f;
-   global flow_check;
-   global pressure_check;
-   global vol_check;
-   global peep_check;
+   global flow_pressure_check;      
    global peak_check;
    global infantData;
    global presVol;
+   global nameFile;
+   global errorMessage;
       
-   period = 1/f(1,1);          
-
-
+   period = 1/f(1,1);  
+   
 % Get the timestamps
     %nalm:
     [~,sheet_name]=xlsfinfo(file_nalm);
@@ -70,29 +63,30 @@ nalm_Data = movevars(nalm_Data, 'P_diff_nalm', 'After', 'Flow_nalm');
 
 %Run tests
 
-test1 = Tester(nalm_Data, lab_Data, T_n, T_l, period);
-if flow_check == 1
+test1 = Tester(nalm_Data, lab_Data, T_n, T_l, period, nameFile);
+if flow_pressure_check == 1
     %run flow function
     flowPlotter(test1);
-end
-if pressure_check == 1
-    pressurePlotter(test1)
-end
-if vol_check ==1
-    volumePlotter(test1)
-end
-if peep_check == 1
-    peepPlotter(test1)
+    pressurePlotter(test1);
+    if test1.valid == 0
+        errorMessage = 'Physical validation failed'
+    else
+        errorMessage = 'Physical validation passed'
+    end
+    myhandle = findobj('Tag','edit5');
+    set(myhandle, 'String',errorMessage);
 end
 if infantData ==1
-    infantDataCollector(test1, a_vent)
+    infantDataCollector(test1, a_vent);
 end
-if peak_check ==1
-    peakPlotter(test1, infantData)
+if peak_check == 1
+   p = peakPlotter(test1);
+   myhandle = findobj('Tag','edit6');
+   set(myhandle, 'String',p);
 end
 
 if presVol == 1
-    pressVolCurve(test1, infantData)
+    pressVolCurve(test1, infantData);
 end
 
 

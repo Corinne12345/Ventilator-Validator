@@ -1,5 +1,4 @@
 
-
 function varargout = FileValidator(varargin)
 % FILEVALIDATOR MATLAB code for FileValidator.fig
 %      FILEVALIDATOR, by itself, creates a new FILEVALIDATOR or raises the existing
@@ -24,7 +23,7 @@ function varargout = FileValidator(varargin)
 
 % Edit the above text to modify the response to help FileValidator
 
-% Last Modified by GUIDE v2.5 25-Sep-2019 12:33:40
+% Last Modified by GUIDE v2.5 08-Oct-2019 21:25:28
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -44,6 +43,7 @@ else
     gui_mainfcn(gui_State, varargin{:});
 end
 % End initialization code - DO NOT EDIT
+
 
 
 % --- Executes just before FileValidator is made visible.
@@ -77,31 +77,11 @@ varargout{1} = handles.output;
 
 % --- Executes on button press in checkbox2.
 function checkbox2_Callback(hObject, eventdata, handles)
-    global flow_check
+    global flow_pressure_check
     if get(hObject, 'Value') == get(hObject, 'Max')
-        flow_check = 1;
+        flow_pressure_check = 1;
     else
-        flow_check = 0;
-    end
-
-
-% --- Executes on button press in checkbox3.
-function checkbox3_Callback(hObject, eventdata, handles)
-    global pressure_check
-    if get(hObject, 'Value') == get(hObject, 'Max')
-        pressure_check = 1;
-    else
-        pressure_check = 0;
-    end
-
-
-% --- Executes on button press in checkbox4.
-function checkbox4_Callback(hObject, eventdata, handles)
-    global vol_check
-    if get(hObject, 'Value') == get(hObject, 'Max')
-        vol_check = 1;
-    else
-        vol_check = 0;
+        flow_pressure_check = 0;
     end
 
 
@@ -271,12 +251,27 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 
-% --- Executes on button press in infantData.
-function infantData_Callback(hObject, eventdata, handles)
-% hObject    handle to infantData (see GCBO)
+% --- Executes on button press in presVol.
+function presVol_Callback(hObject, eventdata, handles)
+% hObject    handle to presVol (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+ global presVol
+    if get(hObject, 'Value') == get(hObject, 'Max')
+        presVol = 1;
+    else
+        presVol = 0;
+    end
+
+
+% --- Executes on button press in InfantData.
+function InfantData_Callback(hObject, eventdata, handles)
+% hObject    handle to InfantData (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of InfantData
  global infantData
     if get(hObject, 'Value') == get(hObject, 'Max')
         infantData = 1;
@@ -285,16 +280,96 @@ function infantData_Callback(hObject, eventdata, handles)
     end
 
 
-% --- Executes on button press in checkbox9.
-function checkbox9_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox9 (see GCBO)
+
+function nameFile_Callback(hObject, eventdata, handles)
+% hObject    handle to nameFile (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hint: get(hObject,'Value') returns toggle state of checkbox9
- global presVol
-    if get(hObject, 'Value') == get(hObject, 'Max')
-        presVol = 1;
-    else
-        presVol = 0;
-    end
+% Hints: get(hObject,'String') returns contents of nameFile as text
+%        str2double(get(hObject,'String')) returns contents of nameFile as a double
+global nameFile
+nameFile = get(hObject, 'String');
+
+% --- Executes during object creation, after setting all properties.
+function nameFile_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to nameFile (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit5_Callback(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit5 as text
+%        str2double(get(hObject,'String')) returns contents of edit5 as a double
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function edit5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit6_Callback(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit6 as text
+%        str2double(get(hObject,'String')) returns contents of edit6 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit6_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit7_Callback(hObject, eventdata, handles)
+% hObject    handle to edit7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit7 as text
+%        str2double(get(hObject,'String')) returns contents of edit7 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit7_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

@@ -1,16 +1,24 @@
 
+
 classdef Tester < handle
     
     properties
         sam_rate = .05
         %Errors for FlowLab
-        erFLflow = .05 %(sl/min)
+        erFLflow = .05 %(sl/min), 
         erFLvol = .01 %sl
         erFLdp = .1 %mbar
         erFLfreq = 1 %bpm
         erFLcomp = 1 %ml/mbar
-        errorTable
         
+        %adjust these later
+        
+        erFlow = .17 
+        erVol = .17
+        erP = .2
+        
+        
+        folderName
         newFile
         size
         x1
@@ -28,18 +36,25 @@ classdef Tester < handle
         period
         scale_fac 
         
-        valid = 1; %changes to 1 if test is valid       
+        valid = 1; %changes to 0 if test is not valid       
             
     end
     
     methods
-        function obj = Tester(nalm_Data, lab_Data, T_n, T_l, period) 
+        function obj = Tester(nalm_Data, lab_Data, T_n, T_l, period, folderName) 
         
             obj.nalm_Data = nalm_Data;
             obj.lab_Data = lab_Data;
             obj.T_n = T_n;
             obj.T_l = T_l;
             obj.period = period;
+            obj.folderName = string(folderName);
+            
+            
+            %class(obj.folderName)
+            
+            
+            mkdir (obj.folderName);
 
             fileTrimmer(obj);
             
@@ -50,8 +65,8 @@ classdef Tester < handle
             variableCompare(obj);         
                
      
-        end       
-        
+        end     
+               
         function variableCompare(obj)
             
             seconds = 40;
@@ -70,10 +85,7 @@ classdef Tester < handle
             
             y10 = interp1(obj.x1,y1,obj.x0);
             y20 = interp1(obj.x2, y2, obj.x0); 
-            
-            %correlation
-            %[R1, P1] = corrcoef(y10,y20);           
-            
+                       
             figure
                      
             plot(obj.x0, y10)
@@ -86,7 +98,23 @@ classdef Tester < handle
             legend({"FlowLab", "NALM"});  
                        
             hold off 
+            
+            filename = fullfile(obj.folderName, 'flowTest.fig');
+            
+            savefig(filename);
             grid
+            
+            % Bland-Altman part
+            [means,diffs,meanDiff,CR,linFit] = BlandAltman(y10,y20,3, 'Flow'); %decide how you'll factor in error 
+            if abs(meanDiff)> obj.erFlow
+                obj.valid = 0;
+            end
+            for i = 1:length(means)
+                if  means(i)*linFit(1)+linFit(2) > CR(1) ||  means(i)*linFit(1)+linFit(2) < CR(2)
+                        obj.valid = 0;
+                end
+            end         
+           
         end
         
         function pressurePlotter(obj)
@@ -109,7 +137,21 @@ classdef Tester < handle
             legend({"FlowLab", "NALM"});
             
             hold off  
+            filename = fullfile(obj.folderName, 'pressureTest.fig');
+            
+            savefig(filename);
             grid
+            
+            % Bland-Altman part
+            [means,diffs,meanDiff,CR,linFit] = BlandAltman(y10,obj.y2p,3, 'Pressure');
+            if abs(meanDiff)> obj.erP
+                obj.valid = 0;
+            end
+            for i = 1:length(means)
+                if  means(i)*linFit(1)+linFit(2) > CR(1) ||  means(i)*linFit(1)+linFit(2) < CR(2)
+                        obj.valid = 0;
+                end
+            end
             
            
         end    
@@ -132,7 +174,10 @@ classdef Tester < handle
             plot(obj.x0, obj.y2v)
             legend({"FlowLab", "NALM"});
             
-            hold off  
+            hold off 
+            filename = fullfile(obj.folderName, 'volumeTest.fig');
+            
+            savefig(filename);
             grid
         end
         
@@ -156,16 +201,18 @@ classdef Tester < handle
                      hold off
                      
                 end
+                
+                filename = fullfile(obj.folderName, 'PressVolTest.fig');
+            
+            savefig(filename);
                 grid                
             end             
                 
         end   
         
         
-        function peepPlotter(obj)
-        end
-        
-        function peakPlotter(obj)
+        function peak = peakPlotter(obj)
+            peak = rms(obj.y2p);            
         end
         
         function setFile(obj)
@@ -333,23 +380,8 @@ classdef Tester < handle
                         
             loc_diff = locs_n - locs_l;
             x = transpose(0:length(loc_diff)-1); 
-            p = polyfit(x, loc_diff, 1);            
-            
-            %{
-            figure          
-            plot(x,loc_diff);
-            title("Delay Character")
-            xlabel("Samples")
-            ylabel("Time diff (s)")
-            hold on
-            
-            x1 = linspace(0, length(loc_diff));
-            y1 = polyval(p, x1);
-            plot(x1, y1);
-            hold off;
-            grid     
-            %}
-                        
+            p = polyfit(x, loc_diff, 1);          
+                                    
             obj.scale_fac = p(1);          
                  
         end

@@ -15,9 +15,9 @@ classdef Tester < handle
         
         erFlow = .17 
         erVol = .17
-        erP = .2
+        erP = .2        
         
-        
+        currentFolder = pwd;
         folderName
         newFile
         size
@@ -33,36 +33,38 @@ classdef Tester < handle
         lab_Data
         T_n
         T_l
-        period
+        
         scale_fac 
         
-        valid = 1; %changes to 0 if test is not valid       
+        valid = 1; %changes to 0 if test is not valid    
+        ex
             
     end
     
     methods
-        function obj = Tester(nalm_Data, lab_Data, T_n, T_l, period, folderName) 
+        function obj = Tester(nalm_Data, lab_Data, T_n, T_l, folderName) 
         
             obj.nalm_Data = nalm_Data;
             obj.lab_Data = lab_Data;
             obj.T_n = T_n;
-            obj.T_l = T_l;
-            obj.period = period;
+            obj.T_l = T_l;            
             obj.folderName = string(folderName);
-            
-            
-            %class(obj.folderName)
-            
-            
-            mkdir (obj.folderName);
-
+             
             fileTrimmer(obj);
+            if obj.ex == 1                
+                return
+            end
             
             setFile(obj); 
             delayCalc(obj);
-            labDataScaler(obj);       
+            labDataScaler(obj);  
+            
+            file = fullfile('Tests_Results', string(folderName));
+            mkdir (file)
                         
-            variableCompare(obj);         
+            variableCompare(obj);   
+            flowPlotter(obj);
+            pressurePlotter(obj);
                
      
         end     
@@ -95,13 +97,12 @@ classdef Tester < handle
            
             hold on
             plot(obj.x0, y20)            
-            legend({"FlowLab", "NALM"});  
+            legend({"FlowAnalyser", "GINA"});  
                        
             hold off 
             
-            filename = fullfile(obj.folderName, 'flowTest.fig');
-            
-            savefig(filename);
+            filename1 = fullfile(obj.currentFolder, 'Tests_Results',obj.folderName, 'flowTest.fig');            
+            savefig(filename1);
             grid
             
             % Bland-Altman part
@@ -113,7 +114,9 @@ classdef Tester < handle
                 if  means(i)*linFit(1)+linFit(2) > CR(1) ||  means(i)*linFit(1)+linFit(2) < CR(2)
                         obj.valid = 0;
                 end
-            end         
+            end   
+            filename2 = fullfile(obj.currentFolder,'Tests_Results',obj.folderName, 'Bland-Altman_flow.fig');
+            savefig(filename2);
            
         end
         
@@ -126,7 +129,6 @@ classdef Tester < handle
             y10 = interp1(obj.x1,y1,obj.x0);
             obj.y2p = interp1(obj.x2, y2, obj.x0);  
             
-            
             plot(obj.x0, y10)
             title("Pressure comparison test")
             xlabel("Time (s)")
@@ -134,29 +136,32 @@ classdef Tester < handle
             
             hold on
             plot(obj.x0, obj.y2p)
-            legend({"FlowLab", "NALM"});
+            legend({"FlowAnalyser", "GINA"});
             
             hold off  
-            filename = fullfile(obj.folderName, 'pressureTest.fig');
+            filename = fullfile(obj.currentFolder,'Tests_Results',obj.folderName, 'pressureTest.fig');
             
             savefig(filename);
             grid
             
             % Bland-Altman part
             [means,diffs,meanDiff,CR,linFit] = BlandAltman(y10,obj.y2p,3, 'Pressure');
-            if abs(meanDiff)> obj.erP
+            if abs(meanDiff)> obj.erP %if meandiff is more than acceptable error
                 obj.valid = 0;
             end
+            % or if the bland altman line goes outside of the 95% CI           
+            
             for i = 1:length(means)
                 if  means(i)*linFit(1)+linFit(2) > CR(1) ||  means(i)*linFit(1)+linFit(2) < CR(2)
                         obj.valid = 0;
                 end
             end
-            
+            filename2 = fullfile(obj.currentFolder,'Tests_Results',obj.folderName, 'Bland-Altman_pressure.fig');
+            savefig(filename2);
            
         end    
         
-        function volumePlotter(obj)
+        function volumePlotter(obj) %%% currently not in use
             figure
             y1 = obj.newFile{1:obj.int, 4};
             y2 = obj.newFile{1:obj.int, 8};
@@ -175,41 +180,11 @@ classdef Tester < handle
             legend({"FlowLab", "NALM"});
             
             hold off 
-            filename = fullfile(obj.folderName, 'volumeTest.fig');
+            filename = fullfile(obj.currentFolder,obj.folderName, 'volumeTest.fig');
             
             savefig(filename);
             grid
         end
-        
-        function pressVolCurve(obj, infantData)
-            if obj.valid == 1
-                figure
-                x = obj.y2p;
-                y = obj.y2v;
-                plot(x,y)
-                title("Pressure Volume Curve")
-                xlabel("Pressure (mbar)")
-                ylabel("Volume (ml)")
-                if infantData == 1
-                     hold on
-                     xi = obj.vent{:,3};
-                     yi = obj.vent{:,4};
-                     plot(xi,yi)
-                     legend({"NALM", "Infant Data"})
-                     %plot infantData, get data from infantDataCollector
-                 
-                     hold off
-                     
-                end
-                
-                filename = fullfile(obj.folderName, 'PressVolTest.fig');
-            
-            savefig(filename);
-                grid                
-            end             
-                
-        end   
-        
         
         function peak = peakPlotter(obj)
             peak = rms(obj.y2p);            
@@ -240,11 +215,11 @@ classdef Tester < handle
                %value = obj.lab_Data{i,4};
                %obj.lab_Data{i,4} = value + offset;               
                
-           end           
+           end          
          
                       
            obj.newFile = [obj.lab_Data obj.nalm_Data];   
-           head(obj.newFile)
+           %head(obj.newFile)
            
            
            obj.size = height(obj.newFile);
@@ -260,11 +235,12 @@ classdef Tester < handle
         end                
         
         function fileTrimmer(obj)
-
+            
             %Trims both to same start time             
             time_interval = etime(obj.T_l, obj.T_n);
-            if (time_interval > 30)
-                error('time interval can not be more than 30s');                
+            if (time_interval > 15)               
+               obj.ex = 1;               
+               return
             end
                         
             rows_to_delete = time_interval/obj.sam_rate -3;       
@@ -280,13 +256,14 @@ classdef Tester < handle
             %}
            
                        
-            %trim nalm to first positive grad
+            %trim nalm to first positive grad where y > 0
 
             f_nalm = table2array(obj.nalm_Data(:,2));
-            t_nalm = table2array(obj.nalm_Data(:,1)) ;
+            t_nalm = table2array(obj.nalm_Data(:,1));           
             
             
-            i_n = 1;
+            i_n = 1;            
+            m = max(f_nalm);
 
             for i = 4:length(t_nalm)
                 y4 = f_nalm(i);
@@ -297,20 +274,22 @@ classdef Tester < handle
                 x3 = t_nalm(i-1);
                 x_2 = t_nalm(i-2);
                 x_1 = t_nalm(i-3);
-                if  (y4-y3)/(x4-x3)> 20 && (y3-y2)/(x3-x_2)> 10 && abs((y2-y1)/(x_2-x_1)) <=5
+                if  (y4-y3)/(x4-x3)> 20 && (y3-y2)/(x3-x_2)> 10 && abs((y2-y1)/(x_2-x_1)) <=10 && y1 > -m/2
                     i_n = i-3;
                     break                
                 end
             end
             
             obj.nalm_Data(1:i_n, :) = [];
+            
+            %b = size(obj.nalm_Data)
 
          
 
             %trim flowLab to first positive grad
             f_lab = table2array(obj.lab_Data(:,2));
             t_lab = table2array(obj.lab_Data(:,1));
-            
+           % c = size(f_lab)
             il = 1;
 
             for i = 4:length(t_lab)
@@ -323,7 +302,7 @@ classdef Tester < handle
                 x_2 = t_lab(i-2);
                 x_1 = t_lab(i-3);
                 
-                if (y4-y3)/(x4-x3)> 20 && (y3-y2)/(x3-x_2)> 10 && abs((y2-y1)/(x_2-x_1)) <=5
+                if (y4-y3)/(x4-x3)> 20 && (y3-y2)/(x3-x_2)> 10 && abs((y2-y1)/(x_2-x_1)) <=10  && y1 > -m/2
                    il = i-3;
                    break
                 end
@@ -331,22 +310,29 @@ classdef Tester < handle
             
             obj.lab_Data(1:il, :) = [];
             
+            %d = size(obj.lab_Data)
+            
            
             %Trim both to same end time
             len_nalm = height(obj.nalm_Data);            
             len_lab = height(obj.lab_Data);
 
             diff_len = len_nalm - len_lab - 1;
+            
+            
                        
             if(diff_len > 0)
                 %delete the extra cells off nalm_Data
                 obj.nalm_Data((len_nalm - diff_len):len_nalm, :) = [];
             elseif(diff_len < 0)
                 %same for nalm
-                obj.lab_Data((len_lab - diff_lab):len_nalm, :) = [];
+                obj.lab_Data((len_lab - diff_len):len_nalm, :) = [];
             end
             
             %append data so time signatures start at 0
+            
+           % e = size(obj.nalm_Data)
+            %f = size(obj.lab_Data)
             
             
             
@@ -373,16 +359,28 @@ classdef Tester < handle
                 locs_l((length(locs_l) - diff -1):length(locs_l),:) = [];
             end
             
-            length(locs_n)
-            length(locs_l)     
-            
-                       
-                        
+           % length(locs_n)
+          %  length(locs_l)  
+                     
             loc_diff = locs_n - locs_l;
             x = transpose(0:length(loc_diff)-1); 
             p = polyfit(x, loc_diff, 1);          
                                     
-            obj.scale_fac = p(1);          
+            obj.scale_fac = p(1);       
+            
+            figure          
+            plot(x,loc_diff);
+            title("Delay")
+            xlabel("Samples")
+            ylabel("Time diff (s)")
+            hold on
+            
+            x1 = linspace(0, length(loc_diff));
+            y1 = polyval(p, x1);
+            plot(x1, y1);
+            hold off;
+            grid     
+            %}
                  
         end
         

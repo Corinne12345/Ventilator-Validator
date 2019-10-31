@@ -23,7 +23,7 @@ function varargout = FileValidator(varargin)
 
 % Edit the above text to modify the response to help FileValidator
 
-% Last Modified by GUIDE v2.5 08-Oct-2019 21:25:28
+% Last Modified by GUIDE v2.5 31-Oct-2019 17:52:26
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -85,25 +85,6 @@ function checkbox2_Callback(hObject, eventdata, handles)
     end
 
 
-% --- Executes on button press in checkbox5.
-function checkbox5_Callback(hObject, eventdata, handles)
-    global peep_check
-    if get(hObject, 'Value') == get(hObject, 'Max')
-        peep_check = 1;
-    else
-        peep_check = 0;
-    end
-
-
-% --- Executes on button press in checkbox6.
-function checkbox6_Callback(hObject, eventdata, handles)
-    global peak_check
-    if get(hObject, 'Value') == get(hObject, 'Max')
-        peak_check = 1;
-    else
-        peak_check = 0;
-    end
-
 
 function edit1_Callback(hObject, eventdata, handles)
 % hObject    handle to gina_filename (see GCBO)
@@ -159,8 +140,8 @@ function edit3_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit3 as text
 %        str2double(get(hObject,'String')) returns contents of edit3 as a double
-global f;
-f = str2double(get(hObject, 'String'));
+
+f = get(hObject, 'String');
 
 % --- Executes during object creation, after setting all properties.
 function edit3_CreateFcn(hObject, eventdata, handles)
@@ -180,9 +161,28 @@ function ginabrowse_Callback(hObject, eventdata, handles)
 % hObject    handle to ginabrowse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global file_nalm;
-file_nalm = uigetfile({'.xlsx'}, 'GINA File Selector');
+currentFolder = pwd;
+filename = fullfile( currentFolder, 'Tests_data', '*.xlsx');
+global file_nalm
+file_nalm = uigetfile({filename}, 'GINA File Selector');
 set(handles.gina_filename,'String', file_nalm);
+out = filegetter(handles, get(handles.gina_filename, 'String'), filename, file_nalm, handles.gina_filename);
+file_nalm = out;
+
+
+
+function out = filegetter(handles, filestring, filename, setfile, releventhandle)
+    if filestring ~= '0'  
+        out = setfile;
+        return
+    else
+    uiwait(warndlg('You must select a file'));
+    setfile = uigetfile({filename}, 'GINA File Selector');
+    set(releventhandle,'String', setfile);
+    next = get(releventhandle, 'String');
+    out = filegetter(handles, next, filename, setfile, releventhandle);
+    end
+      
 
 
 
@@ -191,93 +191,88 @@ function labbrowse_Callback(hObject, eventdata, handles)
 % hObject    handle to labbrowse (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global file_lab;
-file_lab = uigetfile({'.log'}, 'FlowLab File Selector');
+currentFolder = pwd;
+filename = fullfile( currentFolder, 'Tests_Data', '*.log');
+global file_lab
+file_lab = uigetfile({filename}, 'FlowLab File Selector');
 set(handles.lab_Filename, 'String',file_lab);
-
-
+out = filegetter(handles, get(handles.lab_Filename, 'String'), filename, file_lab, handles.lab_Filename);
+file_lab = out;
 
 % --- Executes on button press in pushbutton4.
 function pushbutton4_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton4 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+%First check the filename. If it's cool, run the main file
+global nameFile
+
+
+check = 0;
+while check == 0
+    a = get(handles.nameFile, 'String');          
+    % first check that a file name exists
+    f = outfilecheck(a, handles);
+    
+    %{ 
+    Check that a frequency is set
+    
+    b = get(handles.edit3, 'String');
+    f = str2double(freqcheck(b, handles));
+    %}
+    
+    %Then check if file exists
+    currentFolder = pwd;
+    File = fullfile(currentFolder, 'Tests_Results', string(f(1)));      
+    
+    if exist(File, 'dir')
+        str = ['File name " ', File, ' " already exists. Do you want to overwrite this file?'];
+        newStr = join(str);
+        answer = questdlg(newStr, 'Overwrite file?', 'Yes', 'No', 'No');
+        switch answer
+            case 'Yes'           
+                nameFile = f{1};
+                check = 1;
+            case 'No'
+                set(handles.nameFile, 'string', 'Edit Text');
+                newFile = inputdlg('Enter a new file name, no spaces: ', 'Output File Name');
+                set(handles.nameFile,'String', newFile);                
+        end
+    
+    else 
+        nameFile = string(f(1));
+        check = 1;
+    end
+
+end
+
 main
 
-
-% --- Executes on selection change in x_axis.
-function x_axis_Callback(hObject, eventdata, handles)
-% hObject    handle to x_axis (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns x_axis contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from x_axis
-
-
-% --- Executes during object creation, after setting all properties.
-function x_axis_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to x_axis (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on selection change in y_axis.
-function y_axis_Callback(hObject, eventdata, handles)
-% hObject    handle to y_axis (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hints: contents = cellstr(get(hObject,'String')) returns y_axis contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from y_axis
-
-
-% --- Executes during object creation, after setting all properties.
-function y_axis_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to y_axis (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-% --- Executes on button press in presVol.
-function presVol_Callback(hObject, eventdata, handles)
-% hObject    handle to presVol (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
- global presVol
-    if get(hObject, 'Value') == get(hObject, 'Max')
-        presVol = 1;
+function a = outfilecheck(f, handles)
+    if f == "Edit Text"
+        uiwait(warndlg('Please enter an output file name'));
+        newFile = inputdlg('Enter a new file name, no spaces: ', 'Output File Name');
+        set(handles.nameFile,'String', newFile);
+        g = get(handles.nameFile, 'String');
+        a = outfilecheck(g, handles);
     else
-        presVol = 0;
+        a = f;
+        return
     end
-
-
-% --- Executes on button press in InfantData.
-function InfantData_Callback(hObject, eventdata, handles)
-% hObject    handle to InfantData (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-% Hint: get(hObject,'Value') returns toggle state of InfantData
- global infantData
-    if get(hObject, 'Value') == get(hObject, 'Max')
-        infantData = 1;
+%{    
+function b = freqcheck(f, handles)
+    if f == ''
+        uiwait(warndlg('Please enter a frequency'));
+        newFreq = inputdlg('Enter a new frequency value');
+        set(handles.edit3,'String', newFreq);
+        g = get(handles.edit3, 'String');
+        b = freqcheck(g, handles);
     else
-        infantData = 0;
+        b = f;
+        return
     end
+    %}
 
 
 
@@ -288,8 +283,26 @@ function nameFile_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of nameFile as text
 %        str2double(get(hObject,'String')) returns contents of nameFile as a double
+
+%{
 global nameFile
-nameFile = get(hObject, 'String');
+File = get(hObject, 'String');
+check = 0;
+while check == 0;
+    if isfile(File)
+        str = ['File name " ', File, ' " already exists. Do you want to overwrite this file?']
+        newStr = join(str);
+        ans = questdlg(newStr, 'Overwrite file?', 'Yes', 'No', 'No');
+        switch ans
+            case 'Yes'           
+                nameFile = File;
+                check = 1;
+            case 'No'
+
+        end
+    end
+end
+%}
 
 % --- Executes during object creation, after setting all properties.
 function nameFile_CreateFcn(hObject, eventdata, handles)
@@ -373,3 +386,29 @@ function edit7_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in helpmenu.
+function helpmenu_Callback(hObject, eventdata, handles)
+% hObject    handle to helpmenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+%open HELP file
+open GINA-VALIDATOR-MANUAL.pdf
+
+function resetgui(hObject, eventdata, handles)
+set(handles.gina_filename, 'string', 'GINA File');
+set(handles.lab_Filename, 'string', 'FlowAnalyser File');
+set(handles.edit5, 'string', '');
+set(handles.nameFile, 'string', 'Edit Text');
+
+
+
+% --- Executes on button press in pushbutton6.
+function pushbutton6_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+resetgui(hObject, eventdata, handles)
+clear

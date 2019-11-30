@@ -10,8 +10,7 @@
    % Global variables
   
        
-       global flow_pressure_check;   
-       global infantData;      
+         
        global nameFile;
        global errorMessage;      
        global file_lab

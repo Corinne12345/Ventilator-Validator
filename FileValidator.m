@@ -23,7 +23,7 @@ function varargout = FileValidator(varargin)
 
 % Edit the above text to modify the response to help FileValidator
 
-% Last Modified by GUIDE v2.5 31-Oct-2019 17:52:26
+% Last Modified by GUIDE v2.5 05-Nov-2019 12:29:04
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -164,25 +164,32 @@ function ginabrowse_Callback(hObject, eventdata, handles)
 currentFolder = pwd;
 filename = fullfile( currentFolder, 'Tests_data', '*.xlsx');
 global file_nalm
+
 file_nalm = uigetfile({filename}, 'GINA File Selector');
 set(handles.gina_filename,'String', file_nalm);
 out = filegetter(handles, get(handles.gina_filename, 'String'), filename, file_nalm, handles.gina_filename);
 file_nalm = out;
+set(handles.gina_filename,'String', file_nalm);
 
 
-
-function out = filegetter(handles, filestring, filename, setfile, releventhandle)
+function out = filegetter(handles, filestring, filename, setfile, releventhandle) %checks that a file has been selected
     if filestring ~= '0'  
         out = setfile;
         return
     else
-    uiwait(warndlg('You must select a file'));
-    setfile = uigetfile({filename}, 'GINA File Selector');
-    set(releventhandle,'String', setfile);
-    next = get(releventhandle, 'String');
-    out = filegetter(handles, next, filename, setfile, releventhandle);
+    % set a question
+    answer = questdlg('You must select one file. Click "Select File", or "Cancel" to exit.', 'Choose a file', 'Select File', 'Cancel', 'Select File');
+    
+    switch answer
+        case 'Select File'
+            setfile = uigetfile({filename}, 'File Selector');
+            set(releventhandle,'String', setfile);
+            next = get(releventhandle, 'String');
+            out = filegetter(handles, next, filename, setfile, releventhandle);
+        case 'Cancel'
+            out = '0'; 
     end
-      
+    end 
 
 
 
@@ -194,6 +201,7 @@ function labbrowse_Callback(hObject, eventdata, handles)
 currentFolder = pwd;
 filename = fullfile( currentFolder, 'Tests_Data', '*.log');
 global file_lab
+
 file_lab = uigetfile({filename}, 'FlowLab File Selector');
 set(handles.lab_Filename, 'String',file_lab);
 out = filegetter(handles, get(handles.lab_Filename, 'String'), filename, file_lab, handles.lab_Filename);
@@ -206,22 +214,17 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 %First check the filename. If it's cool, run the main file
-global nameFile
 
+
+global nameFile
 
 check = 0;
 while check == 0
-    a = get(handles.nameFile, 'String');          
-    % first check that a file name exists
+    a = get(handles.nameFile, 'String');
+    
+    % first check that a file name has been provided
     f = outfilecheck(a, handles);
-    
-    %{ 
-    Check that a frequency is set
-    
-    b = get(handles.edit3, 'String');
-    f = str2double(freqcheck(b, handles));
-    %}
-    
+ 
     %Then check if file exists
     currentFolder = pwd;
     File = fullfile(currentFolder, 'Tests_Results', string(f(1)));      
@@ -232,14 +235,14 @@ while check == 0
         answer = questdlg(newStr, 'Overwrite file?', 'Yes', 'No', 'No');
         switch answer
             case 'Yes'           
-                nameFile = f{1};
+                nameFile = string(f(1));
                 check = 1;
             case 'No'
                 set(handles.nameFile, 'string', 'Edit Text');
                 newFile = inputdlg('Enter a new file name, no spaces: ', 'Output File Name');
                 set(handles.nameFile,'String', newFile);                
         end
-    
+        
     else 
         nameFile = string(f(1));
         check = 1;
@@ -247,7 +250,16 @@ while check == 0
 
 end
 
-main
+x = get(handles.lab_Filename, 'String')
+y = get(handles.gina_filename, 'String')
+if strcmp(y, '0') || strcmp(y,'GINA File') || strcmp(x,'0') || strcmp(x, 'FlowAnalyser File') 
+      warndlg('FileValidator can not run without a valid file selection. Select a file and click "Go" again');
+      resetgui(hObject, eventdata, handles, 0)
+else
+    main
+end
+
+
 
 function a = outfilecheck(f, handles)
     if f == "Edit Text"
@@ -284,25 +296,6 @@ function nameFile_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of nameFile as text
 %        str2double(get(hObject,'String')) returns contents of nameFile as a double
 
-%{
-global nameFile
-File = get(hObject, 'String');
-check = 0;
-while check == 0;
-    if isfile(File)
-        str = ['File name " ', File, ' " already exists. Do you want to overwrite this file?']
-        newStr = join(str);
-        ans = questdlg(newStr, 'Overwrite file?', 'Yes', 'No', 'No');
-        switch ans
-            case 'Yes'           
-                nameFile = File;
-                check = 1;
-            case 'No'
-
-        end
-    end
-end
-%}
 
 % --- Executes during object creation, after setting all properties.
 function nameFile_CreateFcn(hObject, eventdata, handles)
@@ -397,18 +390,21 @@ function helpmenu_Callback(hObject, eventdata, handles)
 %open HELP file
 open GINA-VALIDATOR-MANUAL.pdf
 
-function resetgui(hObject, eventdata, handles)
+function resetgui(hObject, eventdata, handles, erasename)
 set(handles.gina_filename, 'string', 'GINA File');
 set(handles.lab_Filename, 'string', 'FlowAnalyser File');
 set(handles.edit5, 'string', '');
-set(handles.nameFile, 'string', 'Edit Text');
+if erasename == 1
+    set(handles.nameFile, 'string', 'Edit Text');
+end
 
 
 
-% --- Executes on button press in pushbutton6.
-function pushbutton6_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton6 (see GCBO)
+
+
+% --- Executes on button press in pushbutton7.
+function pushbutton7_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton7 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-resetgui(hObject, eventdata, handles)
-clear
+resetgui(hObject, eventdata, handles, 1);

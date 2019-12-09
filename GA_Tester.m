@@ -1,0 +1,581 @@
+classdef GA_Tester <handle
+    properties
+        filename %string name of the current file
+        filedata %the data from the file
+        freq
+        tv
+        breaths
+        outfile %the table data specifically
+        locsdiff
+        time
+        insp
+        exp
+        wob
+        locs
+        pres_max
+        pres_min
+        p_ave
+        g
+        o
+        insp_func
+        breathstart
+        breathend
+        peaks
+        startinsp
+    end
+    methods
+        function obj =  GA_Tester(filename, presVol_check, flow_check, pres_check, g, o)
+           
+            obj.filename = string(filename);             
+            currentFolder = pwd;
+            data = char(fullfile(currentFolder, 'GA_TestData', filename)); 
+            %data
+            %class(data)
+            [~,sheet_name]=xlsfinfo(data);
+            obj.filedata = readtable(data,'Sheet', sheet_name{4}); %obj.filedata now contains the continuous data from GINA
+            obj.g = g; 
+            obj.o = o;
+            %{
+            file = fullfile('Tests_Results', filename); % makes the output file with all of the data from this individual test
+            mkdir (file)
+            %}
+            
+             %testing, plot prm
+             %{
+             figure()
+             x = table2array(obj.filedata(:,1));
+             y = table2array(obj.filedata(:,2));
+             
+             plot(x,y)
+             %}
+             
+            
+            
+            
+            bpb_analyser(obj,2);
+            
+            if presVol_check == 1
+                presVol_plotter(obj);
+            end
+            
+            if flow_check == 1
+                flow_plotter(obj)
+            end
+            
+            if pres_check == 1
+                pres_plotter(obj)
+            end
+            
+        end
+        
+        function bpb_analyser(obj, flag)  %makes the data table
+            %run methods(using wob)
+            freqfinder(obj, 1);
+            %ff1 = obj.breaths;
+            %freqfinder2(obj);
+            %ff2 = obj.breaths
+            %obj.breathstart
+            
+            
+            tidalfinder(obj);
+            inspexptime(obj,1);
+            pressure_data(obj);
+           
+            
+            %make the outfile
+                         
+            header = {'TestName','Breath', 'Tidal_Volume', 'Insp_Time_s', 'Exp_Time_s', 'P_max', 'P_min', 'P_mean'};
+            
+            [~, name, ~] = fileparts(obj.filename);
+            if isequal(name,obj.o)
+                name = obj.g;
+            end
+           
+            rownames = cell([obj.breaths,1]); %make a cellular string array of this size
+            size(rownames);
+            for i = 1:obj.breaths
+                %newname = name + " b" + i;
+                rownames{i} = char(name);
+            end 
+           
+            out = zeros(obj.breaths, 8);          
+            
+            %Populate with data
+             for i = 1:obj.breaths
+                
+                out(i, 2) = i; 
+                out(i, 3) = obj.tv(i); % tidal volume dat             
+                out(i, 4) = obj.insp(i); %inspiratory times
+                if flag ==1
+                    out(i,5) = obj.exp(i+1); %expiratory times
+                else
+                    out(i,5) = obj.exp(i);
+                end
+                out(i,6) = obj.pres_max(i); %max diff pressures
+                out(i,7) = obj.pres_min(i); %min diff pressures
+                out(i,8) = obj.p_ave(i);
+                
+             end
+             
+             k =  array2table(out, 'VariableNames', header);
+             k.TestName = rownames;
+             
+             % out = cell2table(cell(obj.breaths,7), 'VariableNames', header, 'RowNames', rownames); 
+             obj.outfile = k;
+             
+             %plot test od findpeaks function
+             
+             figure()
+             x = obj.time;
+             y = obj.wob;
+             
+             plot(x,y)
+             
+             hold on
+             
+             plot(obj.locs, obj.peaks, 'og');
+             
+             hold on
+             y = zeros(length(obj.startinsp));
+             
+             plot(obj.startinsp, y, 'or');
+             
+             
+             
+             hold off
+             
+             
+             
+        end
+             
+                       
+            
+        function freqfinder2(obj)
+            f = table2array(obj.filedata(:,6)); %flow
+            t = table2array(obj.filedata(:,1)); %time
+            
+            %Run peak analysis to determine how many breaths you are
+            %dealing with
+            m = max(f);
+            [~, locs1] = findpeaks(f,t,'MinPeakProminence', m/2);
+            b_init = length(locs1); %initial number of breaths before trimming etc
+            
+            b_init
+            
+            breathstart = zeros(b_init);
+            breathend = zeros(b_init);
+            
+            obj.insp_func = zeros(length(t));
+            j = 1;
+           
+            while j < b_init
+                for i = 1: (length(t) - 3)
+                    y3 = f(i+3);
+                    y2 = f(i+2);
+                    y1 = f(i+1);
+                    y0 = f(i);
+                    x3 = t(i+3);
+                    x2 = t(i+2);
+                    x1 = t(i+1);
+                    x0 = t(i);
+
+                    d3 = (y3-y2)/(x3-x2);
+                    d2 = (y2-y1)/(x2-x1);
+                    d1 = (y1-y0)/(x1-x0);
+
+                    if d3>d2 && d3>0 && d2>=0 && y3>0.1 &&y2>0 && y1 <0.1 %&& d1>=0 && y2<0.1
+                        obj.breathstart(j) = x2; %but then it needs to stay at 1 until expiration
+                    end
+
+                    if d3<0 && d2<0 && y3<0 && y2<=0 && y1 >=0 && y0 >=0
+                        obj.breathend(j) = x2;
+                        
+                    end
+                    j = j+1;
+                end
+            end
+            
+            obj.breathstart
+            
+            %trim all data to start of first breath
+            i = 1;
+            firstbreath = obj.breathstart(1);
+            while t(i) < firstbreath
+                obj.filedata(i,:) = [];
+                i = i+1;                
+            end
+            
+            
+            %delete breathend info that is now irrelevent
+            if obj.breathend(1) < firstbreath
+                obj.breathend(1) = [];
+            end
+            
+            
+            %change time back to zero
+            for i = 1:length(t)
+                new_t = obj.filedata{i,1} - firstbreath;
+                obj.filedata{i, 1} = new_t;
+            end 
+            
+            for i = i:length(obj.breathstart)
+                new_t = obj.breathstart{i} - firstbreath;
+                obj.breathstart{i} = new_t;                
+            end
+            for i = length(obj.breathend)
+                new_t2 = obj.breathend{i} - firstbreath;
+                obj.breathend{i} = new_t2;
+            end        
+            
+            obj.time = table2array(obj.filedata(:,1));
+            obj.breaths = length(obj.breathstart) - 1; %only full breaths count
+        end
+            
+            
+        
+        
+        function freqfinder(obj, flag)
+            
+            %calculate using WOB
+            if flag ==1
+            % Take file, run peak analysis, count peaks/time            
+            
+                w = table2array(obj.filedata(:,9)); %chX, must be set as WOB            
+                t = table2array(obj.filedata(:,1));            
+                %timeInterval = round(((time{length(time)} - time{1})/60), 2); %Time of data collection in minutes 
+                m = max(w);
+
+                [~, locs1] = findpeaks(w, t,'MinPeakProminence', m/2);  
+
+                %cut the data to start from the first exhalation
+                for i = 1:length(t)    
+                    while t <= locs1(1)
+                        obj.filedata(i, :) = [];
+                    end
+                end
+
+                %change time back to zero.
+
+                start_t = obj.filedata{1,1};
+
+                for i = 1:length(t)
+                    new_t = obj.filedata{i,1} - start_t;
+                    obj.filedata{i, 1} = new_t;
+                end          
+
+                %then get location of peaks 
+                w = table2array(obj.filedata(:,9));           
+                t = table2array(obj.filedata(:,1));          
+                m = max(w);            
+                [obj.peaks, obj.locs] = findpeaks(w, t,'MinPeakProminence', m/2);           
+
+
+                obj.locsdiff = zeros(1, length(obj.locs)-1);
+
+                for i = 1:(length(obj.locs)-1)
+                    obj.locsdiff(1, i) = (obj.locs(i+1) - obj.locs(i)); % gives the peak to peak length
+                end
+
+                wavelength = mean(obj.locsdiff);
+                obj.wob = w;
+                obj.time = t;
+                obj.freq = 1/wavelength; 
+                obj.breaths = length(obj.locsdiff);
+                
+                
+            end
+            
+            %calculate using insp function
+            if flag ==2
+                i = table2array(obj.filedata(:,9)); %chX, must be set as WOB            
+                t = table2array(obj.filedata(:,1));            
+                %timeInterval = round(((time{length(time)} - time{1})/60), 2); %Time of data collection in minutes 
+                
+                %{
+                %cut data to the start of first inspiration
+                tag = 0;
+                for j =1:length(t)
+                    while tag == 0
+                        if obj.filedata(j,1) ~=0
+                            tag = 1;
+                        end
+                        obj.filedata(j, 1) = [];
+                    end
+                end
+                %}
+                
+                %get breaths locations (start and end)
+                [~, obj.locs] = findpeaks(i,t,'MinPeakProminence', 1.0); %starts of inspirations
+                [~,obj.troughs] = findpeaks(-i,t,'MinPeakProminence', 0); %starts of expirations
+                obj.locsdiff = zeros(1, length(obj.locs)-1);
+                
+                %cut data to the start of first inspiration, %cut data to end from start of final insp
+                for i = 1:length(t)
+                    if t(i)< obj.locs(1)
+                        obj.filedata(i,:) = [];
+                    end
+                    if t(i)>obj.locs(length(obj.locs))
+                        obj.filedata(i,:) = [];
+                    end
+                end
+                
+                %change time back to zero
+                start_t = obj.filedata{1,1};
+
+                for i = 1:length(t)
+                    new_t = obj.filedata{i,1} - start_t;
+                    obj.filedata{i, 1} = new_t;
+                end    
+                
+                for i = 1:(length(obj.locs)-1)
+                    obj.locsdiff(1, i) = (obj.locs(i+1) - obj.locs(i)); % gives the peak to peak length
+                end
+                
+                %spit out global variables
+                obj.time = t;
+                obj.breaths = length(obj.locsdiff);
+                    
+                
+            end
+            
+            
+        end
+        
+        function tidalfinder(obj)
+            vol = table2array(obj.filedata(:,7));
+            
+            m = max(vol);           
+            
+            [pks, ~] = findpeaks(vol, obj.time,'MinPeakProminence', m/2);
+            %len = length(pks);            
+            %pks(len) = [];
+            obj.tv = pks;
+        end
+        
+        function inspexptime(obj, flag)
+            
+            %case of using WOB for breaths
+            if flag  == 1
+                      
+                for j = 1:length(obj.locs)  %cycle through the peaks
+                     % reset the start of inspiration
+                    counter = 0; %reset counter
+                    while counter == 0
+                        for i = 1:length(obj.time) %cycle through time increments
+                          timecounter = obj.time(i);
+                          % for a time period between timecounter and locsdiff(i),
+                          % if WOB > 0, then insp has begun
+
+                              if timecounter < obj.locs(j) && (j == 1 || (timecounter > obj.locs(j-1))) %ie, if the current time < the upcoming peak                          
+                                  for k = 2:length(obj.wob) % go through the wob vector
+                                      if obj.wob(k) ~= 0
+                                          counter = 1;  
+                                          obj.startinsp(j) = timecounter; %time that inspiration starts
+                                          break
+                                      end                                      
+                                  end
+                                  if counter == 1
+                                      break
+                                  end
+                                  
+                              end
+
+                        end                     
+                    end
+                     
+                    obj.insp(j) = obj.locs(j) - obj.startinsp(j);  %this 
+                  if j> 1
+                  obj.exp(j) = obj.startinsp(j) - obj.locs(j-1); 
+                  end
+                end
+            end
+            
+            obj.startinsp
+            
+            %case of using insp function for breaths
+            if flag == 2
+                for j = length(obj.locs)
+                    obj.insp(j) = obj.troughs(j) - obj.locs(j);
+                    if j< length(obj.locs - 1)
+                        obj.exp(j) = obj.locs(j+1) - obj.troughs(j);
+                    else
+                        obj.exp(j) = obj.time - obj.troughs(j);
+                    end
+                end
+            end
+                
+        end
+        
+        function pressure_data(obj)
+            
+            %This first part is simply populating the table
+            p = table2array(obj.filedata(:,3)); %chX, must be set as WOB  
+                                   
+            t = obj.time;            
+            %timeInterval = round(((time{length(time)} - time{1})/60), 2); %Time of data collection in minutes 
+            m = max(p);
+            
+            [pks, ~] = findpeaks(p, t,'MinPeakProminence', m/2);  
+            obj.pres_max = pks;
+            
+            p_opp = -1*p;
+            
+            m2 = max(p_opp);
+            
+            [pksl, ~] = findpeaks(p_opp, t, 'MinPeakProminence', m2/2);
+            obj.pres_min = -1*pksl;
+            
+            %average pressure
+            sample_mins = cell(length(obj.locs),1);
+            sample_maxs = cell(length(obj.locs),1);
+            
+            for i = 1:length(obj.locs)-1
+                for j = 1:length(p)
+                    if t(j) == obj.locs(i)                        
+                        sample_mins{i} = j;
+                    end
+                    if t(j) == obj.locs(i+1)                      
+                        sample_maxs{i} = j;
+                        %return
+                    end                 
+                end
+            end
+                                    
+            for i = 1:length(sample_mins)
+                min_ = sample_mins{i};
+                max_ = sample_maxs{i};
+                sum_p = 0;
+                for j = min_:max_
+                    sum_p = sum_p + p(j);
+                    obj.p_ave(i) = sum_p/(max_ - min_);
+                end
+                
+            end
+            
+           
+                    
+            
+            
+            %Below are attempts at smoothing data, I don't think it's
+            %neccessary but will talk to Alistair
+            
+            %{
+            %Unsmoothed first (pressure, volume) plots (to demonstrate the
+            %difference)
+            vol = table2array(obj.filedata(:,7));
+            py = table2array(obj.filedata(:,3));
+            t = table2array(obj.filedata(:,1));
+            palv = table2array(obj.filedata(:,4));
+            
+            figure
+            
+            plot(t, vol);
+            title('Tidal volume')
+            xlabel('Volume (ml)')
+            ylabel('Time (s)')
+            hold on
+           %looks better without filtering for volume
+           %{
+            y2 = sgolayfilt(vol, 5, 9);
+            plot(t, y2);
+           %}
+           
+            y2_1 = movmean(vol, 2);
+            plot(t, y2_1);
+            
+            legend('Unfiltered', 'Filtered');
+            
+            hold off
+            grid
+            
+            figure
+            
+            plot(t, py);
+            title('Differential Pressure')
+            xlabel('Pressure, mbar')
+            ylabel('Time (s)')
+            
+            hold on
+            %filter for baseline wander
+            
+            %weighted moving average filter
+            y3_1 = movmean(py, 2);
+            %y3_3 = movmean(py, 3);
+            %y3_4 = movmean(py, 4);           
+            
+            
+            y3_2 = sgolayfilt(py, 3, 7);
+            
+            y3_3 =movmean(y3_2, 2);
+            
+            plot(t, y3_1, t, y3_2, t, y3_3);
+           
+            
+            legend('Unfiltered', 'Filtered movmean 2', 'sgolay', 'sgolay then movmean');           
+            hold off            
+            
+            grid   
+            
+            figure 
+            
+            plot(t,palv)
+            title('Alveolar Pressure')
+            xlabel('Alv Pres, mbar')
+            ylabel('Time (s)')
+            
+            hold on
+            y4_1 = movmean(palv, 2);
+            plot(t, y4_1)
+            legend ('Unfiltered', 'Filtered')
+            
+            %{
+            y4 = sgolayfilt(palv, 5, 7);
+            plot(t, y4);
+            %}
+            
+            hold off
+            
+            grid
+            
+            %pressure volume plot comparisons
+            
+            figure           
+            
+            plot(py, vol, y3_3, y2_1)
+            title('Pressure volume plot py')
+            
+            plot(palv, vol, y4_1, y2_1)
+            title('pressure volume plot palv')
+            
+            grid
+            
+            %}
+            
+            
+            
+            
+            
+            
+           
+            
+            %savinsky golay smoothing
+        end
+            
+            
+        
+        function presVol_plotter(obj)
+        end
+        
+        function presVol_plotAnalysis(obj)
+        end            
+        
+        function flow_plotter(obj)
+        end
+        
+        function pres_plotter(obj)
+        end
+    
+    end
+end
+
+    

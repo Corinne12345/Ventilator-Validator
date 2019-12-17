@@ -321,13 +321,6 @@ classdef GA_Tester <handle
                 
                 %breaths will now be equal to number of exps
                 b = 0;
-                for i = i:length(obj.flow)-1
-                    if f(i) >= 0 && f(i+1) <=0
-                        b = b+1;                        
-                    end
-                end
-                
-                obj.breaths = b;
                 
                 
                 

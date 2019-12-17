@@ -22,7 +22,7 @@ function varargout = GINA_Analyser(varargin)
 
 % Edit the above text to modify the response to help GINA_Analyser
 
-% Last Modified by GUIDE v2.5 04-Nov-2019 16:47:37
+% Last Modified by GUIDE v2.5 11-Dec-2019 12:00:45
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -83,14 +83,14 @@ function browse1_Callback(hObject, eventdata, handles)
 % select multiple files & check that files have actually been selected
 
 currentFolder = pwd;
-filename = fullfile( currentFolder, 'GA_TestData', '*.xlsx');
+filename = fullfile(currentFolder, 'GA_TestData', '*.xlsx');
 global file_gina
-file_gina = uigetfile({'..\Validation_GUI\GA_TestData\*.xlsx'}, 'Select one or more files', 'MultiSelect', 'on');
-set(handles.listbox1,'String', file_gina);
+file_gina = (uigetfile({filename}, 'Select one or more files', 'MultiSelect', 'on'));
+set(handles.listbox1,'string', file_gina);
 
-out = filegetter(handles, get(handles.listbox1, 'String'), filename, file_gina, handles.listbox1);
-file_gina = out;
-set(handles.listbox1,'String', file_gina);
+out = filegetter(handles, get(handles.listbox1, 'String'), filename, file_gina, handles.listbox1, hObject, eventdata);
+file_gina = cellstr(out);
+set(handles.listbox1,'string', file_gina);
 
 
 % --- Executes on button press in go.
@@ -101,55 +101,112 @@ function go_Callback(hObject, eventdata, handles)
 
 
 % run data checks first
+global log_file
+log_file = convertCharsToStrings(get(handles.addtable, 'String'));
 
+
+global file_gina
+file_gina = cellstr(get(handles.listbox1,'String'));
+
+global add_check
+global new_check
+
+    %if both boxes equal zero
+    if isequal(add_check, 0) && isequal(new_check, 0)
+        fprintf("line 117")
+        w = warndlg("You must check at least one 'Output Option for Breath by Breath Data'");
+        return
+    end
+%If there was no addtable, set the checkbox to '0' so that doesn't run
+
+    if string(log_file)=='0' || isequal(string(log_file),'Select File')
+        fprintf("line 124");
+        add_check = 0;
+        new_check = 1;
+        x = get(handles.newtable, 'String');
+
+        if isempty(x)        
+            w = warndlg('FileValidator can not run without a valid existing or new table. Select a file and click "Go" again');
+            resetgui(hObject, eventdata, handles, 1)
+            return
+        else
+            a = outfilechecker(x, handles);
+            set(handles.newtable, 'String', a);    
+        end
+    end
 
 % If newbox ticked, check if file exists
 global new_table
-
-if get(handles.newbox, 'Value') == 1 % the box is ticked
-    check = 0;
-    while check == 0
-        a = get(handles.newtable, 'String');
-        
-        % first check that user has written in a file name
-        f = outfilechecker(a, handles);
-        
-        %Now check if that file name already exists
-        currentFolder = pwd;
-        File = fullfile(currentFolder, 'GA_OutputData', string(f(1)));      
-
-        if exist(File, 'dir')
-            str = ['File name " ', File, ' " already exists. Do you want to overwrite this file?'];
-            newStr = join(str);
-            answer = questdlg(newStr, 'Overwrite file?', 'Yes', 'No', 'No');
-            switch answer
-                case 'Yes'           
-                    new_table = string(f(1));
-                    check = 1;
-                case 'No'
-                    set(handles.newtable, 'string', 'Enter New File Name');
-                    newFile = inputdlg('Enter a new file name, no spaces: ', 'Output File Name');
-                    set(handles.newtable,'String', newFile);                
+    if get(handles.newbox, 'Value') == 1 % the box is ticked
+        check = 0;
+        while check == 0
+            a = get(handles.newtable, 'String');
+            if isempty(a)
+                w = warndlg('FileValidator can not run without a valid existing or new table. Select a file and click "Go" again');
+                resetgui(hObject, eventdata, handles, 1)                
+                return
+            else
+            % first check that user has written in a file name
+            b = outfilechecker(a, handles);
+                if isempty(b)
+                    w = warndlg('FileValidator can not run without a valid existing or new table. Select a file and click "Go" again');
+                    resetgui(hObject, eventdata, handles, 1)
+                    return
+                else
+                    f = string(outfilechecker(a, handles)) + '.xlsx';
+                end
             end
 
-        else %if file name does not already exist
-            new_table = string(f(1)); %global variable new_table
-            check = 1;
-        end
+            %Now check if that file name already exists
+            currentFolder = pwd;
+            File = fullfile(currentFolder, 'GA_OutputData', f);      
 
+            if isfile(File)
+                str = ['File name " ', File, ' " already exists. Do you want to overwrite this file?'];
+                newStr = join(str);
+                answer = questdlg(newStr, 'Overwrite file? The old version will be deleted', 'Yes', 'No', 'No');
+                switch answer
+                    case 'Yes'           
+                        new_table = f;                                    
+                        check = 1;
+                    case 'No'
+                        set(handles.newtable, 'string', 'Enter New File Name');
+                        newFile = inputdlg('Enter a new file name, no spaces: ', 'Output File Name');
+                        set(handles.newtable,'String', newFile);                
+                end
+
+            else %if file name does not already exist
+                new_table = f; %global variable new_table
+                check = 1;
+            end
+
+        end
     end
-end
-if get(handles.listbox1, 'String') == '0'  
-      warndlg('FileValidator can not run without a valid file selection. Select a file and click "Go" again');
-      resetgui(hObject, eventdata, handles, 0)
-else
-    ga_main %then run main file
-end
+    
+    x = get(handles.listbox1, 'String');
+
+    if isequal(x, '0') || isequal(x,'Select Files')
+        w = warndlg('FileValidator can not run without a valid file selection. Select a file and click "Go" again');
+        resetgui(hObject, eventdata, handles, 2)
+
+    else
+       
+            ga_main %then run main file
+                    
+            % warndlg('Problem using GINA_Analyser. Check that any excel files being written or added to are closed. Ensure file names do not include illegal symbols. Ensure at least one box is ticked in "2. Output Options for Breath by Breath Analysis"');
+           
+        
+        resetgui(hObject, eventdata, handles, 2) ;
+        clear global
+        clear
+        
+    end
+
 
 
 
 function a = outfilechecker(f, handles) %checks that a filename has been written by user
-    if f == "Enter New File Name"
+    if strcmp(f, "Enter New File Name") || strcmp(f, "0")
         uiwait(warndlg('Please enter a new output file name'));
         newFile = inputdlg('Enter a new file name, no spaces: ', 'Output File Name');
         set(handles.newtable,'String', newFile);
@@ -267,34 +324,37 @@ function browse2_Callback(hObject, eventdata, handles)
 
 %browse for a table
 currentFolder = pwd;
-filename = fullfile( currentFolder, 'GA_OutputData', '*.xlsx');
+filename = fullfile(currentFolder, 'GA_OutputData', '*.xlsx');
 global log_file
-log_file = uigetfile({'..\Validation_GUI\GA_OutputData\*.xlsx'}, 'Select one or more files', 'MultiSelect', 'on');
-set(handles.listbox1,'String', log_file);
+log_file = "";
+log_file = uigetfile({filename}, 'Select one file', 'MultiSelect', 'off'); 
+set(handles.addtable,'String', log_file);
 %tests if 0 is selected
-out = filegetter(handles, get(handles.addbox, 'String'), filename, log_file, handles.addbox); %makes sure a file is selected
-log_file = out;
-set(handles.listbox1,'String', log_file);
+out = filegetter(handles, get(handles.addtable, 'String'), filename, log_file, handles.addtable, hObject, eventdata); %makes sure a file is selected
+log_file = string(out);
+set(handles.addtable,'String', log_file);
 
 
-function out = filegetter(handles, filestring, filename, setfile, releventhandle) %checks that a file has been selected
-    if filestring ~= '0'  
+function out = filegetter(handles, filestring, filename, setfile, releventhandle, hObject, eventdata) %checks that a file has been selected
+    if length(filestring) == 1 && filestring == '0'  
+        % set a question
+        answer = questdlg('You must select a file/s. Click "Select File", or "Cancel" to exit and reset.', 'Choose a file', 'Select File', 'Cancel', 'Select File');
+    
+        switch answer
+            case 'Select File'
+                setfile = uigetfile({filename}, 'File Selector');
+                set(releventhandle,'String', setfile);
+                next = get(releventhandle, 'String');
+                out = filegetter(handles, next, filename, setfile, releventhandle, hObject, eventdata);
+            case 'Cancel'                
+                out = 'Select File';
+        end
+    else        
         out = setfile;
         return
-    else
-    % set a question
-    answer = questdlg('You must select a file/s. Click "Select File", or "Cancel" to exit.', 'Choose a file', 'Select File', 'Cancel', 'Select File');
+    end
     
-    switch answer
-        case 'Select File'
-            setfile = uigetfile({filename}, 'File Selector');
-            set(releventhandle,'String', setfile);
-            next = get(releventhandle, 'String');
-            out = filegetter(handles, next, filename, setfile, releventhandle);
-        case 'Cancel'
-            out = '0'; 
-    end
-    end
+    
 
 
 
@@ -382,21 +442,99 @@ function helpbutton_Callback(hObject, eventdata, handles)
 % hObject    handle to helpbutton (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-
+open GINA_ANALYSER_MANUAL.pdf
 %open file
 
 function resetgui(hObject, eventdata, handles, erasename) 
-set(handles.listbox1, 'string', 'Select Files');
+set(handles.addbox,'value',0)
+set(handles.newbox,'value',0)
+global add_check
+global new_check
+add_check = 0;
+new_check = 0;
 set(handles.addtable, 'string', 'Select File');
 if erasename == 1
     set(handles.newtable, 'string', 'Enter New File Name');
+elseif erasename ==2
+    set(handles.newtable, 'string', 'Enter New File Name');
+    set(handles.listbox1, 'string', 'Select Files');
 end
-
 
 % --- Executes on button press in pushbutton5.
 function pushbutton5_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton5 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-resetgui(hObject, eventdata, handles, 1) 
+resetgui(hObject, eventdata, handles, 2) 
 %also reset tick boxes
+
+function edit5_Callback(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit5 as text
+%        str2double(get(hObject,'String')) returns contents of edit5 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function edit6_Callback(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit6 as text
+%        str2double(get(hObject,'String')) returns contents of edit6 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit6_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit6 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in choicemenu.
+function choicemenu_Callback(hObject, eventdata, handles)
+% hObject    handle to choicemenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns choicemenu contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from choicemenu
+global flag
+v = get(handles.choicemenu, 'Value');
+flag = v;
+
+
+
+% --- Executes during object creation, after setting all properties.
+function choicemenu_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to choicemenu (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

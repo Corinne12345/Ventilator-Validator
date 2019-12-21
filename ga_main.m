@@ -1,90 +1,93 @@
 
-%USER DO NOT EDIT
+% GA_MAIN MATLAB CODE
+%       This file ga_main is called by GA_Analyser when 'GO' is selected on
+%       the GINA_ANALYSER GUI. In this file, data from GA_TestData is sent
+%       to undergo analysis in GA_Tester. Output is arranged into a table,
+%       saved in GA_Output folder as an xlsx doc. This output file will be
+%       named according to GINA_ANALYSER GUI selection to 'add data to
+%       existing table' or 'create new table' and will be named according
+%       to the users chosen file name. GA_TestData and GA_OutputData are
+%       saved in the same directory as all MATLAB files.
 
-%import global values
+fprintf('Entered main')
 
-global file_gina %this is a horizontal cell array
-global presVol_check
-global flow_check
-global pres_check
+% ---Imports global values and sets up full file formatting for new_table
+% and add_table
+global file_gina 
 global add_check
 global new_check
-
+global flag
+    if isempty(flag) %if no selection made, set automatic to be flag = 2
+        flag = 2;
+    end
 currentfolder = pwd;
-global new_table % only executes if new_check ==1
-    %new_table = "something.xlsx"; %for testing purposes only
+global new_table % only executes if new_check ==1   
+    
     n = fullfile(currentfolder, 'GA_OutputData', new_table);
     new_table = n;
-global log_file % only executes if add_check == 1
-    %log_file = "pretendtest.xlsx"; %for testing only
-    l = fullfile(currentfolder, 'GA_OutputData', log_file);
-    log_file = l;
+global add_table % only executes if add_check == 1 
     
-    %for testing only
-    %add_check = 0;
-    %new_check = 1;
+    l = fullfile(currentfolder, 'GA_OutputData', add_table);
+    add_table = l;
+global spontcheck
+    
+    
 
-%Create table to which everything will be appended
-header = {'TestName','Breath', 'Tidal_Volume', 'Insp_Time_s', 'Exp_Time_s', 'P_max', 'P_min', 'P_mean'};
-bigtable = cell2table(cell(0,8), 'VariableNames',header);
+% --- Creates bigtable to which all post-analysed data is appended
+header = {'TestName','Breath', 'Tidal_Volume','Piston_Volume', ...
+    'Insp_Time_s', 'Exp_Time_s', 'Py_max', 'Py_min', 'Py_mean',...
+    'Ptr_max', 'Ptr_min', 'Ptr_mean', 'Palv_max', 'Palv_min', 'Palv_mean'};
+bigtable = cell2table(cell(0,15), 'VariableNames',header);
 
-%This loop goes through every file selected and extracts the data into
-%individual outfiles
-%classname = class(file_gina)
 
-%THE MAIN BIT
+
+% --- Catches error of the input file already having been saved to the
+% excel file previously. See fileslistcheck function.
 fileslist = file_gina;
-%do the check here
-[newfilelist,g,o] = fileslistcheck(log_file,fileslist, add_check, new_check, new_table); %namelog, fileslist, addcheck, newcheck, newtable
+[newfilelist,g,o] = fileslistcheck(add_table,fileslist, add_check, ...
+    new_check, new_table); 
 if isequal(newfilelist,0)
     return
 end
 
+
+
+% --- For each input file selection, run GA_Tester Analysis and append to
+% bigtable
 for i = 1:length(file_gina)
 fileslist = string(file_gina(i)); 
-test = GA_Tester(fileslist,  presVol_check, flow_check, pres_check,g, o); %for each file 
-% Take each outfile and append to a big table.
-bigtable = vertcat(bigtable, test.outfile); 
+test = GA_Tester(fileslist, g, o, flag, spontcheck); %Analysis 
+bigtable = vertcat(bigtable, test.outfile); %Table appending
+% Data rounding to 2dp (can be commented out if total accuracy required)
+    bigtable.Tidal_Volume = round(bigtable.Tidal_Volume, 2);
+    bigtable.Piston_Volume = round(bigtable.Piston_Volume, 2);
+    bigtable.Insp_Time_s = round(bigtable.Insp_Time_s, 2);
+    bigtable.Exp_Time_s = round(bigtable.Exp_Time_s, 2);
+    bigtable.Py_max = round(bigtable.Py_max, 2);
+    bigtable.Py_min = round(bigtable.Py_min, 2);
+    bigtable.Py_mean = round(bigtable.Py_mean, 2);
+    bigtable.Ptr_max = round(bigtable.Ptr_max, 2);
+    bigtable.Ptr_min = round(bigtable.Ptr_min, 2);
+    bigtable.Ptr_mean = round(bigtable.Ptr_mean, 2);
+    bigtable.Palv_max = round(bigtable.Palv_max, 2);
+    bigtable.Palv_min = round(bigtable.Palv_min, 2);
+    bigtable.Palv_mean = round(bigtable.Palv_mean, 2);
 end
 
-%save the table, either concat or not 
 
-if add_check == 1 % add to existing table %bug - this overwrites at a random point rather than adding to the end
-    %tempfile = fullfile(currentfolder, 'GA_OutputData', 'temp.xlsx');
-    
-    T1 = readtable(log_file, 'Sheet', 1, 'ReadRowNames', false);
-    %{
-    header = T1.Properties.VariableNames;
-    rownames = T1.Properties.RowNames;
-    T2 = num2cell(table2array(T1));   
-  	T3 = cell2table(T2, 'VariableNames', header, 'RowNames', rownames);
-    T3 = head(T3)
-    %}
-    newT = vertcat(T1, bigtable);   
-   
-    writetable(newT, log_file);
-    
-    
-   % T2 = readtable(tempfile);
-    
-    %taskkill may not be good idea as you are still using those files
-    
-    %!taskkill -f -im EXCEL.exe 
-    
-    % delete (namelog);
-    
-    %first check if the files we are trying to put in are already in
-    
-    %newT = vertcat(T1, T2);
-    %writetable(newT, namelog,'Sheet', 1, 'WriteRowNames', true);
-    
-    %delete (tempfile); %'temp' not found for some reason
-    
+
+% --- If 'Add data...' box checked in GUI, appends bigtable to existing
+% table
+if add_check == 1     
+    T1 = readtable(add_table, 'Sheet', 1, 'ReadRowNames', false);    
+    newT = vertcat(T1, bigtable);      
+    writetable(newT, add_table);   
     
 end
 
-if new_check == 1 %create a new table with the table name 
-   
+% --- If 'Create new table' box checked in GUI, creates table and
+% overwrites any past data in file
+if new_check == 1 
    existingmatrix = readtable(new_table, 'Sheet', 1);
    [m,n] = size(existingmatrix);
    cleartable = array2table(strings(m,n));
@@ -93,99 +96,102 @@ if new_check == 1 %create a new table with the table name
    
    
 end
-%{
-function newfilelist = double_up_check(fileslist, addcheck, logfile, newcheck, newtable)
-    if addcheck ~= 1 %if you're creating a new file, the rest is irrelevant
-        newfilelist = fileslist;
-        return
-    end   
-    newfilelist = fileslistcheck(logfile, fileslist, addcheck, newcheck, newtable);    
-end
-%}
-fprintf("\nhooray, completed");
 
-function [f,g,o] = fileslistcheck(namelog, fileslist, addcheck, newcheck, newtable)%adds file names to sheet 2 of the xlsx doc
+% --- Executes if no errors, informs user that analysis is complete
+
+
+msgbox("Analysis completed");
+
+
+% --- This function creates logs added input files to the second sheet of
+% the output xlsx file. If a the user attempts to add a file that has
+% already been added (or that has an identical name), user is prompted to
+% choose to add file again or not.
+function [f,g,o] = fileslistcheck(addtable, fileslist, addcheck, ...
+    newcheck, newtable)
+    s = length(fileslist);   
+    log = strings(s, 1);
     
-    s = length(fileslist);
-    
-    %log = table('VariableNames',{'Data_Log'});
-    %log(s, 1);
-    log = strings(s, 1);%vertical string vector
     for i = 1:s
-        %[log; fileslist(i)];
-        log(i) = fileslist(i);
+       log(i) = fileslist(i);
     end
+    
     log = array2table(log);
     log.Properties.VariableNames = {'Data_Log'};
     
-    if newcheck == 1 %means we are overriding so need to delete the existing log files
+    if newcheck == 1 %means we are overriding so need to delete the ...
+        % existing log files
         g = 0;
         o = 0;
         if ~isfile(newtable)  
             T = cell2table(cell(0,7));
             writetable(T, newtable);
         end
-        f = fileslist;
-        
-        fprintf("entered newcheck loop");
-        
+        f = fileslist;       
         existingmatrix = readtable(newtable, 'Sheet', 2);
         n = numel(existingmatrix);
         cleartable = array2table(strings(n,1));
-        writetable(cleartable, newtable, 'Sheet', 2)
-        writetable(log, newtable, 'Sheet', 2);
-        
+        writetable(cleartable, newtable, 'Sheet', 2);
+        writetable(log, newtable, 'Sheet', 2);        
     end
     
     
-    if addcheck ==1
-        o = 0;
-        fprintf("entered addcheck loop");
-        exOpen(namelog);        
-        
-        %If addcheck
-        existingmatrix = readtable(namelog, 'Sheet', 2); %this is from the add_table
-        %size(existingmatrix)
+    if addcheck ==1 %check for file previously added
+        o = 0;       
+        exOpen(addtable);        
+        existingmatrix = readtable(addtable, 'Sheet', 2);        
         n = numel(existingmatrix);
     
         for i = 1:s
             for j = 1: n                  
-                if isequal((log{i,1}), string(table2cell(existingmatrix(j,1))))
+                if isequal((log{i,1}), string(table2cell...
+                        (existingmatrix(j,1))))
                     filestring = log{i,1};                    
-                    m = ["The data name", filestring,"has been previously added to this file. Do you wish to add it again or skip?"];
+                    m = ["The data name", filestring,...
+                        "has been previously added to this file.",... 
+                        "Do you wish to add it again or skip?"];
                     message = join(m);
-                    answer = questdlg(message, 'Warning', 'Add again', 'Skip', 'Skip');%send user a warning error
-                    switch answer
-                        case 'Add again'
-                            %rename relevent filename
+                    answer = questdlg(message, 'Warning', 'Add again',...
+                        'Skip', 'Skip');%send user a warning error
+                    
+                    switch answer %user prompted to answer                        
+                        case 'Add again'                            
                             number = 1;
                             newf = '';
                             card = 0;
+                            
                             while card == 0
                                 newf = join([filestring,"(", number, ")"]);
-                                if isequal(newf, string(table2cell(existingmatrix(j,1))))
+                                if isequal(newf, string(table2cell...
+                                        (existingmatrix(j,1))))
                                    number = number + 1;
                                 else
                                     card = 1;
                                 end
                             end
-                             %but this doesn't actually change the file name itself, you need to do that
-                            for k = 1:length(fileslist) %delete relevant filename, then add the new one
+                             
+                            for k = 1:length(fileslist) 
                                     if isequal(filestring, fileslist(k,1))
                                         fileslist(k,:) = [];
                                     end
                             end
-                            f = fileslist; %does not vertcat because we need to read these files in
+                            
+                            f = fileslist;
                             l = height(log);
-                            log{l, :} = filestring; %put a string in this cell                           
+                            log{l, :} = filestring;                           
                             g = newf;
                             o = filestring;
+                            
                         case 'Skip'
-                            if isequal(length(fileslist),1) %ie, if there's only one file selected anyway 
-                                dlg('Process has been quit as there are no new files to add');
+                            if isequal(length(fileslist),1) %if there's ...
+                                % only one file selected and user ...
+                                % chooses to not re-add
+                                dlg('Process quit as there are no new files to add');
                                 f = 0;
                                 g = 0;
-                            else %delete the relevant file name
+                            else %delete the relevant file name from ...
+                                %files to be analysed in GA_Tester,...
+                                % prevents analysis
                                 for k = 1:length(fileslist)
                                     if isequal(filestring, fileslist(k,1))
                                         fileslist(k,:) = [];
@@ -194,30 +200,19 @@ function [f,g,o] = fileslistcheck(namelog, fileslist, addcheck, newcheck, newtab
                                 f = fileslist;
                                 g = 0;
                             end 
-
                     end
 
-                else
+                else %if file is not already on the log
                     f = fileslist;
                     g = 0;
                 end
 
             end
         end  
-        %now add those names in fileslist (unless it's 0) to the existing table
-        %on the spreadsheet 2
-        t  = vertcat(existingmatrix, log);
-       
-        writetable(t, namelog, 'Sheet', 2);
+        
+        %add new file names to log
+        t  = vertcat(existingmatrix, log);       
+        writetable(t, addtable, 'Sheet', 2);
     end
     
 end
-
-
-
-
-
-
-
-
-

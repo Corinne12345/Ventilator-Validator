@@ -8,17 +8,10 @@
   
       
    % Global variables
-  
-       
-         
        global nameFile;
        global errorMessage;      
        global file_lab
        global file_nalm
-
-             
-       
-    
 % Get data  
 % FlowLab
     %Date and Time

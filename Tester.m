@@ -65,6 +65,10 @@ classdef Tester < handle
             variableCompare(obj);   
             flowPlotter(obj);
             pressurePlotter(obj);
+            
+            %write data table to file
+            
+            
                
      
         end     
@@ -85,13 +89,15 @@ classdef Tester < handle
             y1 = obj.newFile{1:obj.int,2};
             y2 = obj.newFile{1:obj.int,6};
             
-            y10 = interp1(obj.x1,y1,obj.x0);
-            y20 = interp1(obj.x2, y2, obj.x0); 
+            y10 = lowpass(interp1(obj.x1,y1,obj.x0), 0.05); %flowanalyser
+            y20 = lowpass(interp1(obj.x2, y2, obj.x0), 0.05); %gina
+            
+            flowcorr = corr(y10, y20)
                        
             figure
                      
             plot(obj.x0, y10)
-            title("Flow Comparison test")
+            title("Flow Comparison test (filtered)")
             xlabel("Time (s)")
             ylabel("Flow (l/min)")                         
            
@@ -117,20 +123,57 @@ classdef Tester < handle
             end   
             filename2 = fullfile(obj.currentFolder,'Tests_Results',obj.folderName, 'Bland-Altman_flow.fig');
             savefig(filename2);
+            
+            %method1-method2 relationship
+            a = min(y10);
+            b = min(y20);
+            if a<b
+                c = a;
+            else
+                c = b;
+            end
+            mi = floor(c - 1);
+            d = max(y10);
+            e = max(y20);
+            if d>e
+                f = d;
+            else
+                f= e;
+            end
+            ma = ceil(f);
+            
+            figure()
+            x = [mi: 0.05: ma];
+            y = x;
+            
+            
+            plot(y10, y20, 'ob', x, y, '-k')
+            title('FlowLab vs GINA for flow');
+            xlabel('GINA')
+            ylabel('FlowLab');
+            legend('FL vs GINA', 'x=y')
+            grid
+            
+            filename3 = fullfile(obj.currentFolder,'Tests_Results',obj.folderName, 'FLvsGINA_Flow.fig');
+            savefig(filename3);
+            
            
         end
         
         function pressurePlotter(obj)
                        
-            figure             
+                       
             y1 = -1*obj.newFile{1:obj.int, 3};
             y2 = obj.newFile{1:obj.int, 7};
             
-            y10 = interp1(obj.x1,y1,obj.x0);
-            obj.y2p = interp1(obj.x2, y2, obj.x0);  
+            y10 = lowpass(interp1(obj.x1,y1,obj.x0), 0.05);
+            obj.y2p = lowpass(interp1(obj.x2, y2, obj.x0), 0.05);  
             
+            presscorr = corr(y10, obj.y2p)
+            
+            figure 
             plot(obj.x0, y10)
-            title("Pressure comparison test")
+            title("Pressure comparison test (Filtered)")
             xlabel("Time (s)")
             ylabel("Pressure (mbar)")
             
@@ -158,6 +201,41 @@ classdef Tester < handle
             end
             filename2 = fullfile(obj.currentFolder,'Tests_Results',obj.folderName, 'Bland-Altman_pressure.fig');
             savefig(filename2);
+            
+            %method1-method2 relationship
+            a = min(y10);
+            b = min(obj.y2p);
+            if a<b
+                c = a;
+            else
+                c = b;
+            end
+            mi = floor(c - 1);
+            d = max(y10);
+            e = max(obj.y2p);
+            if d>e
+                f = d;
+            else
+                f= e;
+            end
+            ma = ceil(f);
+            
+            figure()
+            x = [mi: 0.05: ma];
+            y = x;
+            
+            
+            plot(y10, obj.y2p, 'ob', x, y, '-k')
+            title('FlowLab vs GINA for pressure');
+            xlabel('GINA')
+            ylabel('FlowLab');
+            legend('FL vs GINA', 'x=y')
+            grid
+            
+            filename3 = fullfile(obj.currentFolder,'Tests_Results',obj.folderName, 'FLvsGINA_Pres.fig');
+            savefig(filename3);
+            
+            
            
         end    
         

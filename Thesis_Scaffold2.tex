@@ -1,0 +1,1797 @@
+% Headers ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+\documentclass[12pt, openany, oneside]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{setspace}
+\usepackage[T1]{fontenc}
+
+\usepackage{caption}
+\usepackage{titlesec, blindtext, color, subcaption, multirow}
+
+\titleclass{\subsubsubsection}{straight}[\subsection]
+
+\newcounter{subsubsubsection}[subsubsection]
+\renewcommand\thesubsubsubsection{\thesubsubsection.\arabic{subsubsubsection}}
+\renewcommand\theparagraph{\thesubsubsubsection.\arabic{paragraph}} % optional; useful if paragraphs are to be numbered
+
+\titleformat{\subsubsubsection}
+  {\normalfont\normalsize\bfseries}{\thesubsubsubsection}{1em}{}
+\titlespacing*{\subsubsubsection}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\renewcommand\paragraph{\@startsection{paragraph}{5}{\z@}%
+  {3.25ex \@plus1ex \@minus.2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\renewcommand\subparagraph{\@startsection{subparagraph}{6}{\parindent}%
+  {3.25ex \@plus1ex \@minus .2ex}%
+  {-1em}%
+  {\normalfont\normalsize\bfseries}}
+\def\toclevel@subsubsubsection{4}
+\def\toclevel@paragraph{5}
+\def\toclevel@paragraph{6}
+\def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+\def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+\def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+\makeatother
+
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{4}
+
+
+
+\usepackage[english]{babel}
+\definecolor{gray75}{gray}{0.75}
+\newcommand{\hsp}{\hspace{20pt}}
+\titleformat{\chapter}[hang]{\Huge\bfseries}{\thechapter\hsp\textcolor{gray75}{|}\hsp}{0pt}{\Huge\bfseries}
+\usepackage{url}
+
+
+
+\usepackage[toc,page]{appendix}
+
+
+%\usepackage{tgtermes}
+\usepackage[inline]{enumitem}
+\setlist[description]{leftmargin=1cm,labelindent=1cm}
+
+\usepackage{scrextend}
+\addtokomafont{labelinglabel}{\rmfamily\itshape}
+
+\usepackage[numbers]{natbib}
+\bibliographystyle{IEEEtran}
+\usepackage{notoccite}
+
+\usepackage{amssymb}
+\newlist{todolist}{itemize}{2}
+\setlist[todolist]{label=$\square$}
+
+\usepackage{amsmath, graphicx, amssymb, booktabs}\numberwithin{equation}{chapter}
+\usepackage{verbatim}
+\usepackage{cleveref}
+
+%blank page
+\usepackage{afterpage}
+\newcommand\blankpage{
+	\null
+	\thispagestyle{empty}
+	\addtocounter{page}{-1}
+	\newpage
+	}
+
+%%
+\usepackage{pdflscape}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{tabularx}
+\usepackage{caption}
+%%
+
+\usepackage{wrapfig}
+
+\usepackage{stackengine}
+\newcommand{\tensorm}{%
+% Uncomment below to adjust the gap between the dots
+%\setstackgap{S}{0.6ex}%
+\mathrel{\Shortstack{{.} {.} {.}}}}
+
+\usepackage{listings, pdfpages, fancyhdr}
+\usepackage{rotating, caption, lscape, float, setspace}
+\captionsetup{justification=centering,singlelinecheck=false}
+\setlength{\abovecaptionskip}{6pt}
+\setlength{\belowcaptionskip}{15pt}
+\onehalfspacing
+\graphicspath{{./figs/}}
+\usepackage{geometry}
+\geometry{a4paper, total={170mm,257mm}, left=30mm, right=24mm, top=24mm, bottom=24mm}
+\setlength\parindent{0pt}
+\pagestyle{fancy}
+\fancyhf{}
+\onehalfspacing
+\renewcommand{\headrulewidth}{0.33pt}
+\renewcommand{\footrulewidth}{0.33pt}
+\fancyhead[RO,LE]{\leftmark}
+\setlength{\headheight}{28pt}
+\cfoot{ \thepage}
+\usepackage{calc}
+\newcommand{\sigwidth}{\widthof{\footnotesize xDatum/Unterschrift\ Ausbildungsleiterx}}
+\newcommand{\signaturehere}[1]{%
+\parbox[b][2.5cm][b]{\sigwidth}{%
+\footnotesize%Everything in footnotesize
+\centering% 
+\rule[-3pt]{\linewidth}{0.4pt}\\[0ex]%
+{#1}%
+}}
+
+%%%
+%\usepackage[framed,numbered,autolinebreaks,useliterate]
+%\usepackage{framed}
+%\usepackage{numbered}
+%\usepackage{autolinebreaks}
+%\usepackage{useliterate}
+%\usepackage{fancyhdr}
+%%%
+
+%matlab stuff
+\usepackage[framed, numbered]{matlab-prettifier}
+\usepackage{listings, color}
+ 
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{white}, 
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\fontsize{6}{5}\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\fontsize{6}{5},
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+\lstset{literate=
+  {°}{{$\circ$}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+%Font--------------------------------------
+\usepackage{utopia}
+
+%Abbreviations ----------------------------------------------------------------------------------------------
+%for lists of abbreviations and symbols
+\usepackage[acronyms,toc,nogroupskip,nonumberlist]{glossaries-extra}
+
+
+\newacronym{cpap}{CPAP}{Continuous Positive Airway Pressure}
+\newacronym{crs}{Crs}{Lung Compliance}
+\newacronym{ett}{ETT}{Endotracheal tube}
+\newacronym{fda}{FDA}{Federal Drug Administration (USA)}
+\newacronym{frc}{FRC}{Functional Residual Capacity}
+\newacronym{iso}{ISO}{International Standards Organisation}
+\newacronym{nalm}{NALM}{Neonatal Active Lung Model (Schaller)}
+\newacronym{nicu}{NICU}{Neonatal Intensive Care Unit}
+\newacronym{peep}{PEEP}{Positive End-Expiratory Pressure}
+\newacronym{pip}{PIP}{Peak Inflation Pressure}
+\newacronym{raw}{Raw}{Airway Resistance}
+\newacronym{ga}{GA}{Gestational Age}
+\newacronym{cns}{CNS}{Central Nervous System}
+\newacronym{tpr}{TPR}{T-Piece Resuscitators}
+\newacronym{sib}{SIB}{Self Inflating Bag Resuscitators}
+\newacronym{cga}{CGA}{Corrected Gestational Age}
+\newacronym{gui}{GUI}{Graphical User Interface}
+\newacronym{tga}{TGA}{Therapeutic Goods Administration}
+\newacronym{ce}{ICE}{International Electrotechnical Commission}
+\newacronym{ghtf}{GHTF}{Global Harmonisation Task Force}
+
+\newacronym{vg}{VG}{Volume Guarantee}
+\newacronym{nl}{NL}{Neonatal Lung}
+\newacronym{mcm}{MCM}{Multi-compartment model}
+\newacronym{scm}{SCM}{Single-compartment model}
+
+
+
+
+\makenoidxglossaries
+\glsnoexpandfields
+
+
+
+\begin{document}
+
+% Title Page ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+{\fontfamily{lmr}\selectfont
+
+\begin{titlepage}
+\newcommand{\HRule}{\rule{\linewidth}{0.1mm}} 
+\center
+\includegraphics[width=0.5\textwidth]{su_crest.jpg}\\
+\textsc{\large School of Aeronautical, Mechanical and Mechatronic Engineering}\\[0.5cm] 
+\HRule \\[0.4cm]
+\huge \bfseries A better approach to testing neonatal ventilation equipment\\ 
+\HRule \\[1cm]
+
+\begin{center}
+
+\small\textit{by}
+
+\vspace{1cm}
+								
+\large\textbf{Corinne Theresa Gard}\\
+440314347
+
+\vspace{1cm}
+
+\small\textit{Co-Primary Supervisors}\\
+
+\normalsize
+	
+Dr. Mark Brian Tracy (Westmead Hospital NICU) \\
+
+Prof. Alistair McEwan (AMME Faculty USYD)  \\
+
+\vspace{0.2cm}
+
+\small\textit{Assistant Supervisor}\\
+
+\normalsize
+Dr. Murray Kenneth Hinder (Westmead Hospital NICU)\\
+				
+
+\vspace*{1cm}
+
+\small \textit{An honours thesis submitted in fulfilment of the requirements \\ for the degree of Bachelor of Biomedical Engineering}\\[2cm]
+
+\end{center}
+\end{titlepage}
+
+}
+
+\afterpage{\blankpage}
+
+
+
+% Disclaimer
+%--------------------------------------------------------------------
+\clearpage
+{\Large \bfseries Student/Departmental Disclaimer}\\
+
+The work contained in this thesis is substantially my own, and to the extent that the work is not my own, I have indicated that it is not my own by acknowledging the source of those parts. I have read and understood the \textit{University of Sydney Student Plagiarism: Coursework Policy and Procedure} documentation, and I understand that failure to comply can lead to the University commencing proceedings against me for potential student misconduct.\\
+
+This thesis was prepared for the school of Aerospace, Mechanical and Mechatronic Engineering at the University of Sydney, Australia. The opinions, conclusions and recommendations therein are those of the author and do not necessarily reflect the University of Sydney, the NICU department at Westmead Hospital or any other parties involved in this project.
+
+
+% SOC -----------------------------------------------------
+\clearpage
+{\Large \bfseries Statement of Contribution}\\
+
+The list below represents Corinne Gard's contribution:
+
+\begin{itemize}
+\renewcommand{\labelitemi}{\scriptsize$\blacksquare$}
+
+\item I designed the procedure, including the test parameters according to which the lung model, GINA, would be validated.
+\item I wrote the software GINA VALIDATOR. The code design is completely my own, except for the Bland-Altman Analysis code which has been referenced.
+\item I communicated with Dr Peter Schaller, inventor of GINA to discuss changes to GINAs design that would meet the Westmead NICUs testing needs.
+\item Based on the needs expressed by clinicians, I designed and wrote the GINA ANALYSER software for adjusting raw GINA output data and calculating and outputting useful breath by breath data. The code design is completely my own, except for some of the exOpen.m file which has been referenced.
+\item I designed the testing procedures to determine the validity and usability of the GINA ANALYSER software.
+\item I gathered and processed all results in this thesis.
+\item I have written this thesis. It is all my own work, with references. 
+\end{itemize}
+
+\vspace{1cm}
+
+Signed (Signature, Date):
+
+
+\begin{center}
+\vspace{1cm}
+\rule[0.5em]{18em}{0.5pt}
+\hfill
+\rule[0.5em]{18em}{0.5pt}
+Corinne Theresa Gard
+\end{center}
+
+\begin{center}
+\vspace{1cm}
+\rule[0.5em]{18em}{0.5pt}
+\hfill
+\rule[0.5em]{18em}{0.5pt}
+Dr. Mark Tracy
+\end{center}
+
+
+\begin{center}
+\vspace{1cm}
+\rule[0.5em]{18em}{0.5pt}
+\hfill
+\rule[0.5em]{18em}{0.5pt}
+Dr. Alistair McEwan
+\end{center}
+
+
+
+
+
+% Acknowledgements -----------------------------------------------------
+\clearpage
+{\Large \bfseries Acknowledgements}\\
+
+This thesis is dedicated to those people whose belief in me and support made this project a positive experience. I want to especially thank the following people.\\
+
+Firstly, to my supervisors, co-supervisors and academics. Mark Tracy and Murray Hinder, I am so grateful that you saw potential in me and gave me such an awesome opportunity to do something real. Thank you for your willingness in helping me to learn, your flexibility with the project and your patience. To Thomas Drevhammer, thank-you for taking time to teach me and give your insights on the projects direction, you helped give the project new life. To Alistair McEwan and Graham Brooker, thank you for your valuable advice on approaching tasks as an engineer. And to Dr. Peter Schaller, thank you for letting me tinker with your invention and having the kindness to correspond with me and provide me invaluable information. \\
+
+Secondly, to my family and friends. To Mum, Dad, Kane, Riley and Cheeky cat. Thank you for your love and support that has kept me sane. To Prash, thank you for not letting me let myself down and for always being by my side. Thank you to Marly and Brooke for helping me believe in myself. Thank you to Zoe and Clara for allowing me to bombard you with statistics questions, even on NYE. And finally, thank you to the Boys and many others for making sure that I kept having fun throughout my thesis. I love you all.\\
+
+Finally, this thesis is dedicated to the sick babies and their families around the world. I hope this work is a part of the move to improve treatments and helps to save lives.
+
+\afterpage{\blankpage}
+
+
+
+
+
+% Abstract -----------------------------------------------------
+\clearpage
+\pagenumbering{roman}
+\begin{center}
+\vspace*{\fill}
+{\Large \bfseries Executive Summary}\\
+\end{center}
+
+
+
+\vspace*{\fill}
+
+
+% Contents -----------------------------------------------------
+\clearpage
+\pagenumbering{gobble}
+\tableofcontents
+\listoffigures
+\listoftables
+
+%make sure that appendices are listed too
+
+% Abbreviations ------------------------------------------------
+\glsaddall
+\setlength{\glsdescwidth}{0.5\linewidth}
+\setlength{\glspagelistwidth}{0.1\linewidth}
+\printnoidxglossary[type =acronym, sort = letter, title = Abbreviations]
+
+
+% Chapter 1 Introduction -----------------------------------------
+\chapter{Introduction}
+\pagenumbering{arabic}
+
+\section{Overview}
+Worldwide, approximately 7{\%} of newborn infants experience respiratory distress requiring basic ventilation support in order to provide sufficient pulmonary oxygenation and gaseous exchange to sustain life \citep{edwards2013}. One third of these infants go on to require advanced therapy in the form of endotracheal intubation or nasal prongs to deliver mechanical ventilation, and medication \citep{wall2009neonatal}. In this field of Neonatal Intensive Care the goal of 'sustaining life' is not as simple as merely keeping the patient alive, but encompasses ensuring the integrity of the central nervous system and organs so that the patient can pursue a life devoid of severe health morbidities. \\
+
+Neonatal respiratory conditions are particularly complicated to treat due to the combined effects of currently having limited understanding of the physiological nature of neonatal lungs, and the delicate and unstable nature of the infant patient. We still do not, for example, fully understand the transition from having lungs filled with amniotic fluid to the babies first breath \citep{hooper2013, burri1984fetal}. There is also still unsurety regarding the chronology of development of respiratory tissue features before and after birth, with increased discussion regarding the interruption to normal development caused by premature birth \citep{smith2010normal}. In the first world, human viability (survival chance greater than 50 {\%} currently approximately 23-24 weeks, far less than the full 38 week term birth. Therefore, depending on the infants corrected gestational age (CGA), the nature of the birth (cesarean before or after labour, induced or natural labour vaginal birth) \citep{morrison1995neonatal,jain2006physiology}, stage of pulmonary development and pathology, there is significantly more versatility of pulmonary physiology in neonates than healthy adults \citep{lanteri1993changes}. \\
+
+Given how small and delicate neonatal infants are, it is very easy to cause extreme damage through delayed or erroneous treatment. Hyperoxia, hypoxia and hypercapnia can cause severe long term impairments including cerebral palsy, blindness, or lead to mortality \cite{wall2009neonatal, hankins2003defining}. Over-pressurization can stretch or burst an infants lungs, causing lifelong disability or death. Mechanical ventilation for prolonged periods often causes a chronic respiratory disease known as bronchopulmonary dysplasia (BPD) which may cause breathing difficulty and lung infections \citep{edwards2013}. Selecting appropriate respiratory treatment for neonates is a balancing act of oxygenation, pressurisation, volume and breath frequency. The clinicians choice is often between providing too little or too much and determining what the least harmful option is. Additionally, neonates with pathology do not breathe with regularity and their stability may rapidly change, leading to essentially an entirely different mechanical system with vastly different treatment needs \citep{burri1984fetal, morley2008advances, miedema2011changes, lanteri1993changes}. There are also not safe ways of measuring, for example, alveolar pressurization or changes in lung compliance \citep{morley2008advances}. Despite this, clinicians and/or mechanical ventilators must attempt to deliver appropriate treatment in real time. \\
+
+Such a complex and versatile system has impeded the development of useful computational models that could provide conclusive implications for therapeutic techniques \citep{oakes2018airflow}. Mechanical lung models have been developed for equipment testing, but these are oversimplified bellows or piston driven machines which offer little insight beyond that these devices mechanically function. Animal studies play the important role of providing evidence of a therapies impact from a cellular, tissue, organ through to organism level. However, testing a non-human animal under experimental restrictions can never fully indicate interactions which may occur in a real clinical setting. Therefore, most progressions in the medical field of neonatology are through the findings of large cross-sectional studies and in-practice observations, which may be described as controlled trial and error on live patients. \\
+
+In the field of critical care ventilation, the Australian Therapeutic Goods Administration (TGA) relies on standards set by the international organisation of standardisation, ISO, to set regulatory benchmarks that must be met for a device to be used with patients. Despite the complexities of treating and developing treatments for neonatal respiratory conditions, it would be reasonable to expect that the Regulatory Standards would ensure that where risks can be avoided they are avoided. Specifically, these Standards should be kept up-to-date with the most conclusive scientific literature and with technology. Unfortunately, this is not the case. Here are some poignant examples of their inadequacy.
+
+\begin{enumerate}
+
+\item There is a lack of standards for safe ventilation that particularly address the neonatal weight range  (approx. 500gms to 10kgs) and the few that do, lump that entire weight range into one group \citep{muzza}. As just described, the range in lung function and mechanical characteristics across this range is immense. Standards should be far more prescriptive to smaller weight intervals and consider more parameters than only weight.
+\item The scope of standards for mechanical ventilators does not cover many of the new algorithm based modes \citep{muzza} and does not address software reliability and validity.
+\item Where standards do not exist, the TGA permits devices to enter the market based on a recommendation by a clinician \citep{tga}. Where standards do exist, companies may have their device skip evidential requirements of the regulatory process due to its 'similarity' to other devices on the market \citep{tga, walker2017ethics}. Both of these create opportunities for unscrupulous companies to have their dysfunctional or dangerous devices fast-tracked to the market \citep{walker2017ethics}. 
+\item Although jurisdictions including the TGA expect manufacturers to immediately report adverse effects, this mandate is presently more of an ethical expectation than an enforced and audited policy. Therefore, there is under or inconsistent reporting. This means that devices are not recalled nearly as soon or often as required \citep{walker2017ethics}. 
+\end{enumerate} 
+
+Perhaps the most unjust consequence of these four points is that by proxy, it renders the first users of any device, either clinician or patient, as non-consenting test subjects. One only has to look at the horrendous case of \textit{Johnson and Johnson}'s vaginal mesh to see that surgeons were duped into believing they were providing a therapeutic implant and women were duped into thinking it would help prevent the prolapse process. These people have to live with the consequences of this avoidable mistake for life. \\
+
+It is therefore not surprising that independent studies have found evidence of dangerous therapy that almost certainly has caused patient harm in the field of neonatal resuscitation, including self-inflating bags for manual resuscitation that provide no air or too much, and ventilator faults that cause lung overdistension \citep{hinder2016, tracy2019newborn}. Recent studies have shown that different ventilator models on identical settings have significant variability of delivery \citep{krieger2017volume, itagaki2017effects}. Given the shortcomings of the present Standards, it is clear that independent studies are essential to ensure the safe therapy of some of our most fragile patients. Dr Mark Tracy, director of the Neonatal Intensive Care Unit (NICU) at Westmead Hospital, Australia, is leading the charge in this field of research. As part of an effort to prevent avoidable damage to newborn babies, he has proposed a multitude of investigations of devices. Should it be found that they are erroneous, recommendations shall be made to the Therapeutic Goods Administration Australia (TGA) and the International Organization of Standardisation (ISO). Additionally, it is of huge advantage to clinicians to do comparative testing of ventilators before committing to purchase or clinical use is hugely advantageous \citep{murray}. The prerequisite for these studies is that a better approach to testing ventilation equipment is developed. This approach must involve an accurate, reliable and valid mechanical model of an infant lung such that devices can interface and interact with it as though it were an infant. This model must output useful data for analysis of that interaction and identification of therapeutic device dysfunction. To fulfil the needs for this testing approach is the purpose of this thesis.
+
+
+
+\section{Aims}
+The purpose of this thesis is to design a comprehensive testing procedure for equipment used for neonatal ventilation in order to assess whether or not they are performing delivering appropriate therapy. This is to be achieved by:
+\begin{enumerate}
+\item{Verifying and validating a mechanical neonatal lung simulator and software.}
+\item{Designing software programme to interface with the simulator in order to output breath by breath variables for statistical analysis.}
+\item{Testing the response of lung model to by different therapeutic devices.}
+\end{enumerate}
+
+\section{Thesis Structure}
+
+
+\subsection{Literature Review}
+The Literature Review section of this paper leads the reader to an understanding of the present state of research in the areas relevant to the experiments undertaken in this thesis. It first summarises the physiological and mechanical nature of the neonatal lung (NL), then evaluates attempts to model the NL computationally and mechanically. Next, it describes devices on the market that we at the Westmead NICU particularly believe must undergo bench testing by a system such as that designed in this thesis . And finally, it goes into greater detail on the present state of Regulatory Standards and where they need to be improved.
+
+\subsection{Core Study One: Verification and Validation of Neonatal Active Lung Model}
+This study is devoted to the experimental design for validating the Neonatal Active Lung Model (NALM) with software known as GINA, which has been designed by \textit{Dr. Schaller Medizintechnik} \texttrademark  as the first mechanical lung prototype on the market to purely model a neonatal lung. No publicly available publication assessing its validity exists. The NALM's internal tubes and components are to scale of a real infant. These and software input parameters, including compliance, are adjustable to represent neonates of varying sizes. Therefore if valid, it will be far more accurate than existing models which introduce error by consequence of adult sized components and non-variable compliance. It is found that the NALM is valid enough to be used for device testing, though the GINA software does not have all the functionality desired and does output data in a meaningful way.
+
+
+\subsection{Core Study Two: Software development for useful breath-by-breath output}
+The purpose of this study is to fulfil the need for data from GINA to be output in a meaningful way. Specifically, the focus of this study is to create a software  which will read data continuous data from GINA and transform it into a spreadsheet of breath-by-breath calculated parameters which can be used for statistical analysis. By the end of this study, this software known as the GINA ANALYSER is capable of analysing recordings of spontaneous and non-spontaneous breaths up to a frequency of 120 breaths per minute. This simple application can be used by clinicians and will be used for device testing in the Westmead NICU.
+
+\subsection{Case Study: Interfacing ventilators with neonatal patients}
+This section fulfills the need to demonstrate understanding of the syllabus for the subject \textit{Biomechanics and Biomaterials} (MECH4961). Given that biomechanics of the neonatal lung have been discussed in depth in the Literature Review, this shortened case study primarily focusses on covering the biomaterials aspect of the course. This section discusses how ventilators interface with neonatal patients, specifically through endotracheal tubes, and explores the impact they have on the endotracheal tissue and how the technology has been improved to reduce adverse impacts over time.
+
+\subsection{Case Study: Regulations in the Medical Device Industry- The Predicate Problem}
+This section fulfills the need to demonstrate understanding of the syllabus for the subject \textit{Regulatory Affairs in the Medical Industry} (AMME4992). It expands on what was introduced by the Literature Review section \textit{Shortfallings of Current Regulatory Standards}, which focusses on Regulations in Neonatal Respiratory treatment. It first explores the current state of the "Global Harmonisation Task Force" (GHTF) group of regulatory bodies worldwide. Then it goes on to discuss the issue of "predicate creep" and evaluates whether the GHTF is moving in a direction to reduce the likelihood of this occurring.
+
+
+
+\subsection{Overall Discussion and conclusions}
+This section discusses the overall findings and points of interest from the accumulated knowledge from the Core Studies and Case Studies. It reflects on where the Core Studies have left the field of Neonatal Resuscitation today and provides direction regarding the future steps for this project of improving testing of neonatal ventilation equipment.
+
+\subsection{Managing Work Health and Safety Risks}
+This section fulfills the requirements of the \textit{Work Health and Safety Act (2011)}, \textit{Section 274}, the \textit{Code of Practice: How to Manage Work Health and Safety Risks} \cite{whs2011}. It includes a risk assessment which identifies hazards I may encounter in my workplace at Westmead Hospital and assesses these risks, with details how they have been managed.
+
+% Chapter 2 Lit review ------------------------------------------------------------------------------
+
+\chapter{Literature Review}
+\section{Background}
+
+
+In the modern setting, medical devices increasingly take over the role of a physician in providing life-saving therapy to patients. As such, medical devices should be held to the the same tenets of the Hippocratic oath, specifically, to "either help or do no harm". It is for this reason that regulatory bodies exist to enforce standards on medical devices, including the International Organisation of Standardisation (ISO), the US Food and Drug Administration (FDA), the Australian Therapeutic Goods Administration (TGA) and the International Electrotechnical Commision (ICE). These organisations have to strike a delicate balance between seeking to safeguard the public's health against devices that are unsafe or useless, while allowing beneficial innovations to reach the market as quickly as possible \citep{walker2017ethics}. On the one hand, the standards of evidence backing the efficacy of the new or improved device must be quantified. More stringent standards equate to less risk. But on the other hand, more stringent standards equate to a longer time before a device is available, during which time patients who could be helped won't be. Hence, perfecting the regulation procedures for therapeutic goods is inherently plagued by the sometimes opposing forces of science versus ethics. \\
+
+Given that developments in medical treatments rely on the interaction of academic progress in the fields of physiology and technology, one thing that is clear is that to control for the most educated and ethical decisions, therapeutic goods administrations must stay on top of the latest research. Unfortunately, in the field of neonatal resuscitation and ventilation support this is far from the case. In recent years a number of publications have been released reporting findings of alarming rates of equipment that pass the standards, yet are defective to the point of providing null or inappropriate therapy. It is almost certain that these devices have been responsible for the death or lifelong health morbidity of patients, with no fault nor knowledge of the physician. \\
+
+\newpage
+
+For example, a 2019 investigation by Tracy et. al. found that 50{\%} of 20 self-inflating bag and models failed to provide safe therapy, \citep{tracy2019newborn} despite that all models passed International Standards, and "Self-inflating bag and mask" are even recommended by the United Nations and the World Heath Organisation as to be used for "newborns requiring positive pressure ventilation" \citep{muzza, UN, who}. Another investigation by Hinder et. al. found that the humidification device in automated ventilators regularly causes water build-up in the respiratory limb, leading to potential patient overpressure exposure \citep{hinder2016}. Automated ventilators have vastly improved therapy since the 1970s, but there in the most frequently used modes of ventilation there evidence of asynchrony between breath provisions and babies breath effort, causing large and dangerous fluctuations in intrathoracic pressure \cite{evidence}. Many modern ventilators have feedback-control modes which attempt to respond to the babies effort and make up the remaining volume/pressure requirements. The problem is that the Standards do not address these modes in any way. Recent studies have shown that different ventilator models on identical settings have significant variability of delivery \citep{krieger2017volume, itagaki2017effects}. Therefore, clinicians have no guarantee that these modes are safe to use and must choose between trialling them on patients, or resorting to older modes with definite but known risks.  \\
+
+
+Perhaps the most alarming omission of the standards is the lack of guidance concerning the air delivery needs of premature infants. Worldwide, approximately 1 in 10 children are born prematurely . Since 2010, medical innovations have resulted in the viability of extremely preterm infants as young as 23 weeks old (CGA) \citep{glass2015outcomes} (see fig. \ref{fig:premi} for image of premature infant). Devices are simply required to be capable of delivering 5-7mls per kilogram, without pressure specifications \citep{tga}. However, alveolar development and lung tissue elastin content begins from the 27th week of gestation and continues years past the postnatal period. Therefore there is a large difference in the compliance of an extremely pre-term infant to a term infant. The ratio of chest cavity size compared with body volume is also higher in smaller infants and therefore the volume and pressure to weight ratios for these patients will be entirely different \citep{burri1984fetal}. While the details of premature infant respiratory physiology and treatment are inconclusive, the above described basic knowledge of the physiological nature of infant lung development is decades old and should at least be a consideration in the Standards.  The 'grandfathering' of Standards has posed and continues to pose an unacceptable risk to life.\\
+
+%------Premie figure-----------------
+\begin{figure}[h!]
+	\begin{center}	
+	\includegraphics[width=0.8\textwidth]{neonatepic.PNG}
+	\caption[Tiny premature infant]{A tiny premature infant. Image property of Jamie and John Florio} 
+	\label{fig:premi}
+	\end{center}
+\end{figure}
+
+
+%-endfig---------------
+
+Positively, in Australia the feedback provided to the TGA based on the studies involving Tracy and Hinder et.al, have prompted a presently underway review of the ISO standards. However the audit of devices can not wait for this update while lives are at stake and while technology continues to advance. If there were a bench test apparatus that could interact with devices like a neonate lung and output data from this interaction for analysis, it would be possible to assess respiratory device effectiveness and inform the regulatory bodies and the clinical community. Though there are various bench tests and lung models that have been used in the past, the lack of standardized equipment and testing procedures have made it difficult to establish normative values for the various parameters of interest that are independent of the measurement devices used, or to use these tests as reliable clinical tools \citep{frey2000}. Furthermore, there are concerns regarding the validity of these models \citep{thomas, murray, mark}. Herein lies the motivation for the research undertaken in this thesis.\\
+
+
+The intention of this literature review is to educate the reader on the requirements that a neonatal lung model for testing respiratory devices must meet in order to be a valid and meaningful tool. It is divided into four parts. Part 2.3 brings the reader up to date with the present theoretical understanding of neonatal respiratory physiology and how it is a challenging system to model. Part 2.4 educates the reader on proposals of how this system can be modelled mathematically and mechanically and concludes that a simple single compartment model with compliance is the best option for a bench test. Part 2.5 introduces devices that we at the Westmead NICU believe require thorough testing with an emphasis on mechanical ventilators, and outlines the present risks and clinically observed problematic phenomenon. To conclude, Part 2.6 provides examples of how in light of all of this information, current regulatory standards fall short of where they need be.\\
+
+
+
+
+\section{Definitions}
+Medical terms that are referred to throughout the literature review are defined below.
+
+\begin{labeling}{alligator}
+
+
+\item[Neonate] An infant within their first 28 days of life (WHO).
+
+\item[Neonatal Lung] An umbrella term to encapsulate the vast range of lungs (with varied physiology and mechanics) that exist across all neonates.
+
+\item[Corrected Gestational Age] Refers to a persons age from birth, corrected for prematurity by subtracting how many weeks before 38 weeks gestation the person was born.
+
+\item [Gestational Age] Refers to the length of time a premature infant spent in gestation.
+
+\item [Term Birth] is classified as 37 to 42 weeks gestation \citep{glass2015outcomes}.
+
+\item [Preterm Birth] is classified as less than 37 weeks gestation \citep{glass2015outcomes}.
+
+\item[Very Preterm Birth] is classified as 28 to 32 weeks gestation \citep{glass2015outcomes}.
+
+\item [Extremely Preterm Birth] is classified as less than 28 weeks gestation \citep{glass2015outcomes}.
+
+\item[CPAP] Continuous Positive Airway Pressure involves the delivery of pressure to sustain inflation of the airways to maintain a PEEP.
+
+\item[PEEP] Positive End Expiratory Pressure is the pressure remaining in the lungs that prevents alveolar collapse at the end of a full exhalation \citep{sail}. This is often provided by a mechanical ventilator.
+
+\item[PIP] Peak Inflation Pressure is the maximum pressure encountered in the thoracic cavity at the end of inhalation \citep{sail}.
+
+\item [FRC] Functional Residual Capacity is the volume of air remaining in the lungs at the end of passive expiration \citep{sivieri}.
+
+\item[WOB] Work of Breathing is the amount of effort, or work (j) a person must put in energetically to inhale.
+
+\item[Surfactant] An oily secretion containing phospholipids and proteins. It reduces surface tension in the liquid coating of the alveolar surface. Therefore is has the role of helping the alveoli stay open \citep{martini}.
+
+\item[Dead Space] The volume of a breath that does not participate in gaseous exchange, usually because it remains in the conducting airways. 
+
+\end{labeling}
+
+
+\section{Theoretical Basics of Neonatal Respiration}
+In this section, the anatomy of the respiratory system is described. An overview of the physiology and mechanics of breathing in the healthy adult is provided as a point of comparison for neonatal respiration. The purpose of this section is to set the scene of the defining parameters of a neonatal lung, to begin the discussion of an ideal neonatal mechanical lung model for bench testing. Furthermore, the below subsection provides the reader with no background in anatomy the necessary education to understand how and why some of the therapeutic devices used can be dangerous.
+
+
+\subsection{Functional Anatomy of the Healthy Adult Respiratory System}
+
+The primary purpose of the respiratory system is to facilitate gaseous exchange. Cells throughout our body require oxygen for the cellular respiration process that creates energy. The primary by-product of of cellular respiration is carbon dioxide, which needs to be removed from the bloodstream and tissue to prevent acidosis. The exchange of oxygen for carbon dioxide occurs at the alveolar interface, where haemoglobin in arterial blood takes inhaled oxygen to be delivered to cells, and venous blood returns dissolved carbon dioxide to be expired \cite{dunn2016physiology}. The respiratory system also has other important roles including defending the body from inhaled pathogens, producing sounds for speaking, facilitating odour detection via the olfactory receptors in the nasal cavity, and indirectly assisting in the regulation of blood pressure via the conversion of angiotensin I to angiotensin II. \\
+
+The respiratory tract can be divided into two sections: Upper and Lower. The Upper Respiratory Tract (URT) is responsible for large-particle filtering, warming and humidifying of air to protect the lower respiratory structures. It is made up of structures including the external nares (nostrils), nasal conchae, oral cavity, soft palatte, pharynx, epiglottis and larynx. The Lower Respiratory Tract (LRT) has a dendriform morphology: from the trachea it branches into two primary bronchi which channel air to and each lung. The branching continues from primary bronchi through secondary and tertiary bronchi, through bronchioles which finally end in alveoli; the tiny (200 - 500${\mu}m$  diameter) \cite{ochs2004number} air filled tissue pockets where all gas exchange occurs \cite{martini}. Refer to Figure \ref{fig:anatomy} for diagrams of the airway and alveoli structures. \\
+
+The following sections provide further detail regarding the most relevant functions of the respiratory system when it comes to modelling. First, the mechanical properties of lung tissues are detailed as a basis for understanding normality. Then, defence mechanisms of the respiratory system are briefly described as these are important therapeutic equipment design considerations. 
+
+% ------------- Figure--------------------------------- 
+
+\begin{figure}
+	\begin{center}
+	
+	\begin{subfigure}{.7\textwidth}
+		\centering
+		\includegraphics[width=0.99\textwidth]{respsys2.PNG}
+	
+\label{fig:resp}
+	\end{subfigure}
+	
+	\begin{subfigure}{.75\textwidth}
+		\centering
+		\includegraphics[width=0.99\textwidth]{alveolarsac2.PNG}
+	
+\label{fig:alveolarsac}
+	\end{subfigure}	
+	
+	
+	\caption[Organization of the adult respiratory system]{Organization of the adult respiratory system. (a)The Upper and Lower Respiratory Systems (b)Anatomy of the terminal bronchiole and alveolar sac. \citep{martini}} 
+\label{fig:anatomy}
+\end{center}
+\end{figure}
+
+%-------------end Figure ---------------------------------------------
+
+
+
+
+\subsubsection{Respiratory Mechanics}
+
+First, we shall explore the basic mechanics of inspiration and expiration. The lungs are essentially a structured 'sponge' of epithelial tissue, lined with mesothelium tissue and sitting within the pleural cavity \citep{hist}. At the base of the pleural cavity and below the lungs is the diaphragm muscle. The active contraction of the diaphragm and intercostal muscles, triggered involuntarily by the brainstem during unforced breathing, increases the volume of the pleural cavity and decreases pleural pressure. This pressure drop causes the lung surface to be pulled outwards, opening up the airways inside. When the alveolar pressure is lower than the atmospheric pressure, the pressure differential results in air being drawn down through the airways, causing inhalation and facilitating gaseous exchange. In a healthy person at rest, exhalation is passive. When contraction of the diaphragm and muscles ceases, the elastic recoil of lung tissue causes the airways to reduce in diameter again and airway pressure increases above atmospheric pressure, forcing air out of the respiratory tract \citep{respShade}. \\
+
+In a healthy lung, exhalation should not cause complete collapse. Instead, the system should reach a state of force equilibrium whereby lung elasticity favours further emptying but the chest wall favours expansion (see figure \ref{fig:forces}, (i)). The remaining volume is known as the \textit{functional residual capacity} (FRC) and the remaining pressure in the alveoli is known as the \textit{positive end expiratory pressure} (PEEP). When exhalation is actively forced as far as possible, the remaining volume which prevents the alveoli from collapsing on themselves is the \textit{residual volume} (RV). Maintenance of the RV is assisted by surfactant, a soap-like fluid which is released by cells in the alveolar duct. Surfactant reduces the surface tension within the delicate alveolar sacs, preventing the tissue from sticking to itself and allowing the easy passage of air \citep{hist, respShade}.  When it comes to inhalation, mechanical forces prevent inflation beyond the \textit{total lung capacity} (TLC) in order to prevent tissue damage. TLC is determined by the point where the elastic recoil of the lung overcomes the declining strength of the muscles as the lung expands. To reach TLC would require considerable effort. Therefore a normal breath will only inflate the lung to \textit{tidal volume} (TV) \citep{respShade}. Refer to Figure \ref{fig:forces} for simplified diagrams representing the forces involved in inspiration and expiration.\\ 
+
+In respiratory science, \textit{compliance} refers to the ability of the lung to expand when a force is applied - a lower compliance essentially means the lung is stiffer. Compliance is separated into two different measurements, \textit{static compliance} and \textit{dynamic compliance}. \textit{Static compliance} is a measure of the elastic properties of the lung under static conditions and is measured as the change in lung volume for any given applied pressure. \textit{Dynamic compliance} represents compliance during gas flow, meaning that the pressure measurement is also changing. \textit{Elastance} refers to the elastic recoil of the lung tissue and is approximately inverse to static compliance. \textit{Resistance} refers to the resistance to airflow in the airways. It is well established that the respiratory system is a non linear system and that \textit{compliance}, \textit{elastance} and \textit{resistance} are impacted by the properties of the lung including tissue cellular composition and characteristics, secretions, surface tension, plasticity, viscoelasticity and airway size and proportions, as well as by properties of respiratory activity including breathing frequency and flow \citep{sivieri, respShade, measure}. Therefore, the volume-pressure curve of a typical lung during breathing will exhibit a well known property known as \textit{resp}, where the locus of inflation and deflation are different due to the effects of dynamic compliance (see Figure \ref{fig:hysteresis}). The following paragraphs describe the tissue properties of the healthy lung which will be used as a point of comparison for neonatal lungs.\\
+
+%---- hysteresis figure------
+
+\begin{figure}
+	\centering		
+	\includegraphics[width=0.7\textwidth]{hysteresis.PNG}	
+	\caption[Lung hysteresis]{A typical volume pressure loop of a ventilated lung, demonstrating hysteresis \citep{sivieri} }
+	\label{fig:resp}
+	
+\end{figure}
+
+%---end figure------------
+
+The cellular make-up of respiratory tissue changes at different levels, and therefore the mechanical properties change too. The upper airways - trachea and bronchi - consist of psuedostratified columnar epithelium supported by cartilage. These walls are also supported by smooth muscle tissue which regulates airway diameter and therefore air distribution throughout the lungs \citep{hist}. As one descends the approximately 24 levels of branching of the airways, the thickness of the walls, fraction of cartilage and the amount of cellular pseudostratification decreases. Beneath level 20 in the lower bronchioles and alveoli, there is no cartilage and epithelial cells begin to take on a more squamous shape \citep{human}. By the alveolar sacs, tissue consists of very thin squamous epithelial tissue which forms walls to separate alveoli. These walls are double layered and lined with capillaries. In this way, gas can easily be transported across the tissue into and out of the bloodstream. These delicate sacs remain open thanks to the combined effect of the PEEP and surfactant. Cuboidal surfactant-secreting cells provide the fluid which reduces alveolar surface tension, preventing the flaccid tissue from sticking to itself and allowing the easy passage of air \citep{hist}.\\
+
+Lung tissues, particularly the lower levels of the airway structure are known to be highly viscoelastic \citep{suki1994lung}. Additionally, at a microstructural level, the components that make up airways (intraparenchymal connective tissue, surface film, contractile elements) appear to have individual signatures of energy dissipation per expansion-contraction cycle. Despite these factors inducing non-linearity in the nature of energy dissipation across the lung, the fact that synchronous expansion of the alveolar duct exists suggests that the hysteresivities of airway components are relatively well matched \citep{fredberg}. Clearly, if pathology or underdevelopment were to affect the ratio or organization of tissue cells, the lungs would have very different mechanical properties and the patient may not be able to breathe on their own.
+
+%-figures ------------------------------
+
+\begin{figure}
+\centering
+	
+	
+	\begin{subfigure}{.7\textwidth}
+		\centering
+		\includegraphics[width=0.99\textwidth]{lungforces.PNG}		
+		\caption{}
+		\label{fig:resp}
+	\end{subfigure}
+	
+	\begin{subfigure}{.75\textwidth}
+		\centering
+		\includegraphics[width=0.99\textwidth]{spirometry.PNG}		
+		\caption{}
+		\label{fig:alveolarsac}
+	\end{subfigure}	
+	
+
+	\caption[Respiratory Mechanics]{(a) At lower volumes (i), the lung favours emptying but the chest wall favours expansion. At higher volumes (ii), both the lung and the chest wall favour emptying. (b) Spirometry of lung volumes. \citep{respShade}} 
+\label{fig:forces}
+
+\end{figure}
+
+
+
+%end figs -------------------------------
+
+\subsubsection{Defence Mechanisms}
+
+The \textit{conducting portion} of the respiratory tract extends from the nasal cavity to the larger bronchioles and is responsible for maintenance and defence. The tissue of this portion is lined with \textit{respiratory mucosa} which consists of a pseudo-stratified ciliated columnar epithelium, and a layer of areolar tissue (\textit{lamina propria}) which contains stem cells for repair and structurally supports the epithelium. Respiratory mucosa is vital for defence of the respiratory system. Mucus released from goblet cells in the bathes the tissue and entraps inhaled debris and larger pathogens (above 5${\mu}m$ in diameter). This mucus concoction is pushed by beating cilia towards the pharynx, where the mucus and its contents swallowed and dissolved by the acids and enzymes of the digestive tract \cite{martini}. Smaller particulates (1 - 5${\mu}m$) are destroyed by alveolar macrophages, with only particulates smaller than $0.5{\mu}m$ remaining trapped in the alveoli \cite{martini,khajeh2015deposition}.  \\
+
+
+\subsection{Neonatal Respiratory Physiology}
+
+The neonatal lung is a variation of the lung described. Particularly, compliance, elastance and resistance are very different compared with a healthy adult lung. It is important to qualify that the term "neonatal lung" (NL) is arbitrary. There is no such single, uniform system that is the "neonatal lung": it is an umbrella term for a wide range or respiratory systems belonging to neonates. The reader is implored to keep in mind this definition of the NL as an umbrella term as they read this thesis. \\
+
+The traits of the infants lungs are mediated by three main factors. These are the degree of pulmonary development, the nature of foetal lung fluid clearance at birth, and, pathology. These are described briefly in the following subsections.
+
+\subsubsection{Stages of Development}
+In the pulmonary system, functional maturity does not correlate to structural maturity. Therefore in order to treat neonates effectively, it is important to understand to what extent their airways are developed. This can be estimated according to the infants GA. There are three primary stages of fetal pulmonary development: (1) Pseudoglandular stage (5-17) weeks, Canalicular stage (17-26 weeks), and Saccular stage (24 weeks to birth). \\
+
+Premature infants in the NICU may be anywhere from 24 weeks old (GA) and therefore may only just be completing the Canalicular phase \cite{burri1984fetal}. At this age, the key developmental markers include: (i) Partial development of pulmonary parenchyma, (ii) Existence of primary, secondary and tertiary bronchi and up to three orders of bronchioles, and, (iii) Creation of airspaces in mesenchyme, which begin to be surrounded by cuboidal epithelium and capillaries. These thin walled saccules are situated at the end of the airways and are not alveolar ducts \cite{burri1984fetal}.\\
+
+At birth the infants pulmonary system is still not structurally mature. The key developmental markers at the end of the Saccualar stage are: (i) Saccules have developed into smooth walled channels, which transition into alveolar ducts after birth (see figure \ref{fig:alvdelv}), (ii) Capillaries have increased in density. They are embedded in a cellular interstitual layer that has low elastin content. Elastin content increases as alveoli form, though only 10{\%} of alveoli have formed by 38 weeks GA. (iii) The surfactant secretion system has matured. \\
+
+Postnatally (or after 38 weeks GA) sacs of cuboidal epithelium and elastin continue to develop into capillarised alveoli. More than 90{\%} of alveoli are formed after birth \citep{smith2010normal}. It is unknown exactly when in childhood the lung is fully formed \cite{burri1984fetal}, though recent estimates tend towards age 8 years old \citep{smith2010normal}. Furthermore, there are general proportional differences between an infant compared with a child or adult that affect airflow through the lungs. Due to the relatively large head to body ratio in a neonate, there is greater anatomical dead space. The epiglottis is also situated higher in the pharynx and is relatively large, which results in a lower airflow resistance in the nasal passage and explains why infants breath preferentially through their nose \citep{neumann}.  \\
+
+Given this description of the developmental changes at the tissue level, less developed lungs tend to have higher compliance, lower elastance and higher airway resistance. High compliance and low outward elastic recoil are caused by thinner airways with low elastin content, and less alveoli septa separating alveoli. For the infant this means that forceful inspiration can cause  collapse of the upper airways. After exhalation the lower airways may be too weak to hold the FRC and collapse due to low transpulmonary pressure. This is partially compensated for by the tendency of the infant to take its next breath before elastic equilibrium volume (EEV) is reached \citep{manual}. The smaller airway diameters in neonates causes higher airflow resistance as resistance is inversely proportional to the fourth power of the airway radius. For the same reason, the narrowing of the endotrachea by secretions has a far higher resistive impact in the neonate than the adult. Efficiency of breathing is also reduced in infants due to the diaphragm and intercostal muscles containing less type 1 muscle fibres, which control slow endurance \citep{neumann}. \\
+
+
+Ultimately, these impedences to breathing mean that the infants work of breathing (WOB) is much higher than a healthy adult.  Additionally, the levels of the CNS responsible for controlling breathing pattern begin to develop early in gestation are incomplete until weeks to months after term birth. Between fatigue or lack of neural communication, preterm infants often have irregular breathing patterns and may experience apneas (periods of non-breathing) which can be life threatening or cause neural tissue death. The ventilatory response to hypercapnea and hypoxia are also impaired due to incomplete formation of the systems required for peripheral and central chemoreceptor response \citep{neumann}. 
+
+%---figure-----------
+\begin{figure}
+	\begin{center}
+	
+	\includegraphics[width=0.7\textwidth]{SEMalvDevelopment}
+	\label{fig:alv}
+	\caption[Postnatal alveolar formation in the rat lung]{Postnatal alveolar formation in the rat lung, by SEM, magnification 230x. a) Age 4 days: large and smooth contoured airspaces. b) Age 8 days: crests and ridges have appeared dilineating shallow alveoli (asterisks). \citep{burri1984fetal}} 
+
+	
+	\end{center}
+
+\end{figure}
+%----end figure------------------
+
+
+
+
+\subsubsection{Respiratory Transition at Birth}
+At birth, an infant is required to rapidly clear its air spaces of fetal lung fluid that has been occupying its lungs throughout its entire development and effectively self-resuscitate. This complex process is mediated by changes in the hormonal state of fetus and mother that occur during labour which induce rapid maturation of the infants pulmonary system, as well as the mechanical forces applied to the infant during vaginal delivery. If this process is disrupted, such as due to emergency induced premature labour or birth by cesarian section, this transition may not be successfully completed. Deprivation of the necessary hormonal changes or premature birth will result in an underdeveloped pulmonary system. The absence of the mechanical forces contributed by vaginal delivery can result in retention of fluid in air spaces, leading to alveolar hypo-ventilation \cite{jain2006physiology}. In either case, the infant will require resuscitation and will likely be admitted to the NICU for ongoing surfactant therapy and ventilation assistance via mask or intubation.
+The most comprehensive model of the transition of an infants lungs between the womb and their first breath is a three stage process, described by Hooper et al \cite{hooper2016}. These stages are:
+\begin{enumerate}
+\item{\textit{Stage one.}} Liquid clearance from the airways. Gas exchange cannot occur.
+\item {\textit{Stage two.}} Temporary accumulation of liquid from the airways within the interstitual tissue compartment. Gas exchange is compromised because the increase in interstitual pressure means a high probability of liquid re-entry into the lungs if the fluid is not rapidly cleared via respiratory activity or application of positive pressure (CPAP)
+\item{\textit{Stage three.}} Liquid clearance from the tissue via the bloodstream, tissues and lymphatic system. Regular gas exchange can occur.
+\end{enumerate}
+
+A neonatal lung may exist in any one of these stages. As a result, modelling and treatment designs and decisions must take these drastically different systems into account.
+
+
+
+\subsubsection{Common pathologies and their impact on the mechanics of the respiratory system}
+Naturally, pathologies impacting the respiratory system will change the physiology and mechanics of it. There are many pathologies that neonates may have, and often they may have many simultaneous conditions interacting. Some pathologies are chronic lung diseases whilst others, such as acidosis, impact the whole body and though quickly rectifiable, are deadly. Some can be caused by invasive ventilation procedures, including bronchopulmonary dysplasia and pneumothorax. Seven of the most common pathologies experienced by neonates, their pathogenesis (if known) and the impact on the respiratory system are listed in the table \ref{tab:med-cond}. There is some further detail on conditions that are caused by intubation and ventilation in the section titled \textit{Case Study One: Interfacing ventilators with neonatal patients}.
+
+%----Table
+\begin{landscape}
+\begin{table}[]
+
+
+%\begin{sidewaysfigure}
+%\caption*{Results for the CHSH} % use "\caption" if you want numbered output
+%\begin{tabularx}{\textwidth}{|c|X|X|} % let LaTeX calculate width of columns 2, 3, and 4
+%\hline 
+
+\small
+\centering
+\caption[Common Respiratory Pathologies in Neonates]{Common Respiratory Pathologies in Neonates \citep{edwards2013}}
+\label{tab:med-cond}
+\resizebox{0.95\linewidth}{!}{%
+\begin{tabular}{p{3.8cm}|p{8cm}|p{8cm}}
+%\begin{tabular}{c|c|c}
+\toprule
+Condition & Pathogenesis & Impact \\ \\ \hline \midrule
+Bronchopulmonary Dysplasia & Damaged alveolar sacs and airways, usually caused by prolonged ventilation. Can be chronic. & Usually results in less compliant lungs, requiring a greater WOB. Also greater risk of infections. \\ \\ 
+Transient Tachypnoea & Excessive lung fluid. Non chronic. & While the fluid is in the lungs the infant will require assistance getting proper oxygenation. \\ \\
+Respiratory Distress Syndrome & Deficiency of surfactant. Can cause chronic hyaline membrane disease. Can be chronic. & Dead cell membranes coat the alveoli, preventing gaseous exchange. \\ \\
+Pneumonia & A lower respiratory tract infection. Non chronic. & Fluid on the lungs and the resultant ruptured cell membranes can cause difficulty aquireing proper oxygenation, and difficult treatment due to the extra sensitivity and weakness of the tissue. \\ \\
+Meconium Aspiration Syndrome & Aspiration of milk, blood or faeces during or after birth. Non chronic. & Can cause pulmonary hypertension. Inhaled meconium can cause airway obstruction, infection leading to swelling, and chemical pneumonitus. \\ \\
+Persistent Pulmonary Hypertension & The failure of pulmonary vascular resistance to decrease after birth. A primary or secondary cause of respiratory distress. Non chronic. & Can cause acidosis due to the demand for extra oxygenation to help lower vascular resistance. \\ \\
+Pneumothorax & Air presence in the pleural space & Inability to regulate pressure gradients needed for inspiration and expiration.
+\end{tabular}%
+
+}
+\end{table}
+\end{landscape}
+
+
+%\end{tabularx}
+%\end{sidewaysfigure}
+%---end table---
+
+
+
+\section{Neonatal Lung Modelling}
+When it comes to the mechanically modelling the lung, there is a dichotomy between the accuracy of a complex, multi-compartment model (MCM) and using a simple single-compartment model (SCM). A MCM can include the multiple levels of the bronchial tree and their mechanical characteristics. With an MCM, the flow and pressure characteristics throughout the lung will be more realistic and therefore any interaction between the MCM and a device will be more similar to an interaction with a real infant and give a better indication of whether the device is functioning correctly. The problem with an MCM is that the more moving or interfacing parts in a machine, the greater the risk of dysfunction. Additionally, as the tube components that represent airways in the machine will not be made of tissue, and also because of the large variation between individual lungs, it is unlikely that an MCM would contribute significant additional accuracy to a mechanical model. For this reason, MCMs have remained in the domain of computational modelling and SCMs have been the design of choice for bench-top models. \\
+
+Even though real lungs are by no means single compartment, a good mechanical SCM should replicate the properties of the neonatal lung as best as possible. Internal tube diameters should be diameters that reflect the neonates airways. For example, an extreme premature infant may have an endotracheal diameter as small as 2.5mm, while a term infant's may be up to 5mm \citep{ett}. These material of these tubes should be similar in terms of elastance, toughness and internal roughness to bronchial tissue. The volume of the internal compartment must be variable and should be able to deliver appropriate volumes. Perhaps most importantly, the model should have a changeable non linear compliance. Finally, it should be able to replicate the breathing patterns of an infant.\\
+
+Many papers have been published which detail the design of neonatal specific lung models. These models tend to take two forms: (1) simple bellows or piston models, and (2) hybrid mechanical-software models. A survey of the literature on models determines that hybrid models tend to have more use as the user can program the breathing parameters, but it is the robustness of the mechanical design which really determines the model accuracy \citep{cecchini2011, cappa2002, frey2001, frey2000, scara2013, stank2017, measure}. Some of the key considerations include:\\
+
+\begin{itemize}
+	\item{Materials used must have enough placticity such that the pressure volume curves exhibits hysteresis \citep{scara2013}.}
+	\item{The model must be leak free and capable of having PEEP and PIP induced without pressure baseline drift \citep{stank2017}.}
+	\item{The rate of inflation and deflation must be accurate for high and low frequencies and high and low volumes. This can become problematic, for example, when using stepper motors.}
+	\item{Gas compressibility must be taken into account, and the thermodynamic gas reference model should be adiabatic \citep{cecchini2011}.}
+	\item{The dead space within the machine should reflect that of an infant lung \citep{thomas}.}
+
+\end{itemize}
+
+There are some available neonatal lung simulators on the market which can be divided into three categories: puppet-like, passive, and active simulators. Puppet-like simulators are realistic appearing models of an infant which can be ventilated via mask, mouth-to-mouth, intubation etc. They are able to imitate active breathing and changes in breathing rate and depth, but not airway resistance, lung compliance or complex breathing patterns and therefore can not be used to evaluate ventilator interaction with pathological states \citep{stank2017, scara2013}. Examples include the SimNewB\textregistered (Laerdal Medical, Wappingers Falls, NY, USA) and Newborn HAL\textregistered S3010 (Guamard, Miami, FL, USA). Passive simulators tend to be small machines with a singular or double compartment which allows the user to alter airway resistance and compliance but not simulate spontaneous breathing patters. Examples include the Adult {\&} Infant Test Lung (Michigan Instruments, Grand Rapids, MI, USA) or SmartLung\texttrademark Infant Test Lung (IMT Medical, Buchs, Switzerland). Finally, active lung simulators are capable of simulating spontaneous breath and interacting with ventilators, in addition to all the features of passive simulators. The most commonly used model on the market is the ASL 5000 Adult/Neonatal Breathing Simulator (Ingmar Medical, Pittsburgh, PA, USA) \citep{scara2013}. 
+
+
+
+
+\section{Therapeutic systems}
+
+Testing therapeutic systems with an infant model is essential for evaluating performance. This evaluation translates directly into hypotheses on the effects of the therapeutic device with a real infant. The purpose of this section is to briefly introduce some therapeutic systems that we at the Westmead NICU believe require testing. First, mechanical ventilators as a whole are explained to the reader. Mechanical ventilators have vastly improved patient outcomes but even the best new modes appear to still have issues and the patient risks (or lack thereof) have not fully been realised. Itagaki et al. and Krieger et al. have shown that there is significant variability between the performance ventilator models, even when used with the identical settings. It is likely that these issues are caused by algorithm differences between devices \citep{itagaki2017effects, krieger2017volume}. \\
+
+We in particular want to test the Volume Guarantee mode which is meant to deliver volume based on feedback of the patients own effort to reduce injury. However, it has been clinically witnessed at Westmead Hospital NICU that it may deliver too high pressures with the smallest infants. Second, rPAP pieces are mentioned, including how testing on a mechanical infant will help clinicians and technicians understand whether it is a worthwhile technology.
+
+
+
+\subsection{Mechanical Ventilators}
+
+This section begins with an overview of modern mechanical ventilation systems, common ventilation modes and the risks associated with ventilation systems. The aim with automated ventilation is to provide the minimum assistance necessary to keep the patient healthy. Over-ventilation can cause permanent injuries including volutrauma and lung over-distension \cite{mccallion2008} and prevent the patient from developing their respiratory muscles in order to function independently. The majority of premature infants particularly those very and extremely preterm, require breathing assistance due to the incomplete formation of their airways and lungs.\\
+
+Automated long term mechanical ventilation systems used in conjunction with surfactant therapy has been the preferred method of treatment since the 1960's when it was employed to treat infants with hyaline membrane disease \cite{evidence}. These ventilators supercede a long history of resuscitation procedures and devices, with mouth to mouth and alcohol being used since the middle ages, to the first bellows type ventilator with pressure limiting valves being built by Hunter in 1755. In 1907, Draeger and Blume released the Pulmonator, a mobile short-term respirator that applied alternating positive-negative pressure \cite{history1}. All of these progressions to or from ventilation were made according to prominent scientific understanding at the time. \\
+
+Modern mechanical ventilators provide oxygenation to the patient via silicon face mask, nasal prongs or insertation of an endotracheal tube (ETT). The ventilator machine itself contains a pump which delivers air from a tank of compressed oxygen or mixed gas, depending on the patient needs. The air is humidified via a humidifier and warmed to body temperature before delivery. Clinicians select appropriate modes of delivery via a touch screen computer interface. In addition to the mode, the user may select important parameters including breath frequency, delivered volume, PEEP and PIP. The interface also displays patient breath data and waveforms.\\
+
+Due to advancements in technology and understanding of neonatal physiology, mechanical ventilators save more lives than ever before \cite{gregory1971}.  Treatment modes include biphasic positive airway pressure (BiPAP), continuous positive airway pressure (CPAP), high flow nasal cannula therapy (HfNC), nasal high-frequency oscillation CPAP (hfCPAP), nasal intermittent positive pressure ventilation (NIPPV), synchronized intermittent positive airway pressure using fluidic flip flow driver (SIPAP),  intermittent mandatory ventilation (IMV), synchronized intermittent mandatory ventilation (SIMV), synchronized intermittent positive pressure ventilation (SIPPV, also known as Patient Triggered Ventilation, PTV, or Assist Control (A/C)), high-frequency oscillation ventilation (HFOV), Volume Guarantee (VG) and pressure support ventilation (PSV) \cite{muzza}. \\
+
+The most common mode of ventilation is IMV, especially in centres outside of the first world. During IMV, mechanical breaths of fixed duration and volume or pressure are delivered at predetermined time intervals. This leads to asynchrony because the frequency of spontaneous breaths by the infant is random. \textit{Inspiratory asynchrony} occurs when a mechanical breath is delivered at the end of and extends beyond spontaneous inspiration. It can produce an inspiratory hold that limits the spontaneous respiratory rate or results in excessive lung inflation. Expiratory asynchrony occurs when a mechanical breath is delivered during exhalation. It can delay lung deflation and elicit active expiratory efforts against positive pressure producing large fluctuations in intrathoracic pressure. Asynchrony can affect gas exchange, and has been linked to increased risk of air leaks and intraventricular haemorrhage (IVH) \cite{evidence}. \\
+
+The synchronized modes (SIPPV, SIMV, VG, PSV) use complex software control algorithms that allow ventilators to respond in real time to feedback from the infant has meant that patients pulmonary systems can grow without ventilator induced injuries, in particular, overdistension injuries. There substantial evidence of the benefit of synchronised ventilation over conventional ventilation. Patients can be removed from ventilation (extubated or mask removal) sooner which is associated with lower rates of sustained ventilator induced injury or disease \cite{evidence, mccallion2008, mccallion2005}. Ventilators are required to deliver these treatment options to a wide patient weight range (approx. 500gms to 6Kgs for newborns, up to 35Kg infant in some combined paediatric models) and often in a difficult thermal environment (closed incubators, open care platforms with high humidity patient circuits) \cite{muzza}.\\
+
+
+Today, as with throughout history, our technological abilities are ahead of our understanding of the intricate physiology of the infants lungs. This is one of the primary reasons why the discovery of negative side effects of new delivery modes of ventilation are often not discovered until clinicians notice adverse trends in the health of their patients. The other primary reason is the dysfunction of these modes. Thankfully this is far easier to control for and avoid through rigorous regulatory testing before the modes are introduced into practice. Unfortunately these controls currently are not rigorous enough and lives are still at risk to avoidable injuries \cite{muzza, mark, hinder2016, mccallion2005}, which will be explained in detail under \textit{Shortfallings of Current Regulatory Standards}. It has been observed that with the recent update of the Fabian ventilator (Acutronic, Hirzel Switzerland), VG fails with a sudden drop in PIP on the smallest infants. Problems have also been observed in the VN500's (Drager, Lubeck Germany). This has meant that often VG can't be used which is not ideal. For this reason, VG mode is one of the first technologies that we intend to test after completion of this thesis, using the improved design for testing neonatal equipment. VG will be explored in further detail in the following section.
+
+
+
+\subsection{Respiratory mode of interest: Volume Guarantee}
+
+Volume Guarantee mode falls under the umbrella of Volume Targeted Ventilation (VTV). These modes aim to maintain tidal volume and thereby reduce injury causing issues that are common with Pressure Limited Ventilation (PLV). PLV works by delivering a fixed PIP and has traditionally been used to control the arterial carbon dioxide (PaCO2). During this mode, the tidal volume ($V_{Td}$) fluctuates due to the babies own attempts at breathing, changes in lung mechanics (eg, the addition of surfactant) and variable ETT leak. PLV has led to high inflation pressures or losses in alveolar volume due to insufficient ventilation. A systematic review of randomized controlled trials of VTV versus PLV found that VTV significantly reduces the rates of death, bronchopulmonary dysplasia (BPD), pneumothorax, hypocarbia and brain injuries \cite{practical}. A contributing factor to this is that VTV seems to be associated with faster weaning than other modes of ventilation \cite{evidence}.\\
+ 
+
+The premise of VG is that the machine will monitor a patients own breathing efforts and deliver the required amount of air required such that the expired $V_{Td}$ equals a set volume. Specifically, the peak inflation pressure (PIP)  is adjusted according to whether the $V_{Td}$ of the previous inflation met the set $V_{Td}$. Used in conjunction with SIPPV mode, VG supports spontaneous breaths \cite{practical}. It aims to ensure that the patient is ventilated to the set volume whether the patient does or does not make any effort to breathe, according to a set back-up rate frequency (BUR) which delivers inflations when the infants breathing rate falls beneath it and auto-adjusts when they make a breathing attempt \cite{mccallion2008}. The advantage of using expired $V_{Td}$ is that it is less affected by ETT leak than inspired $V_{Td}$. This is important because it avoids erroneous changes to the delivered $V_{Td}$. VG can be used with a leak of up to 50$\%$. Beyond this, the ventilator will increasingly underestimate the delivered $V_{Td}$, causing an increased PIP and potentially hypocarbia.\\
+
+So far, there is little published evidence of any major concerns associated with the use of VG. This could be associated with how relatively new VG is and how it is still not used in many NICUs due to lack of understanding of it \cite{muzza}. There is some published clinical evidence of some inappropriate PIP's being delivered with VG. McCallion et al (2005) found that after 3$\%$ of inflations, interruption of expiration (most likely due to diaphragmatic braking) caused an increased pressure for the next inflation of \~{}4.9 cm $H_{2}O$ compared with normal VG inflation \cite{mccallion2005}. In their 2007 study, Mccallion et al found that in the Draeger Babylog 8000 ventilator the PIP was 4cm $H_{2}O$ lower during triggered inflations (those caused by the baby making a breathing effort) than untriggered inflations (those made according to the BUR)\cite{mccallion2008}.\\
+
+It is not yet known how common these errors are and why they particularly are seen in the smallest infants. To obtain data of VG interraction with a valid infant lung simulator would be very useful for clinical decisions and to induce technological changes and changes to the Standards.
+
+
+
+\subsection{rPAP System}
+The rPAP technology is posed as a replacement for the T-piece (TPR) which is the piece used to permit exhalation and help regulate flow when delivering CPAP and other ventilation therapies. During spontaneous breathing, the rPAP has a lower resistance to breathing, is pressure stable and reduces the imposed work of breathing compared with the TPR. During positive pressure ventilation, the rPAP has higher expiratory flows and shorter time constants. This probably reduces the risk of inadvertent PEEP, but it may also increase the risk of unequal ventilation in inhomogenous lungs \citep{thomas}. In order to guarantee the rPAPs value over the TPR for sure and bring it to the point of clinical usage, it would benefit from obtaining data from being tested on a valid infant lung model .
+
+
+
+\section{Shortfallings of Current Regulatory Standards}
+
+In Australia, the Therapeutic Goods Administration (TGA) is the government body responsible for setting the regulatory guidelines of devices used in the medical industry. New medical devices must go through procedures to meet these guidelines and approved before being permitted for use with patients. This can often take many years. The six general principles that must me met are \cite{tga}:
+
+\begin{itemize}
+\item Use of medical devices do not to compromise health and safety.
+\item Design and construction of medical devices must conform with safety principles.
+\item Medical devices must be suitable for intended purpose.
+\item Long-term safety. That is, the device is safe to use within the period indicated by the manufacturer so long as it is maintained and no subjected to stressors beyond manufacturers recommendations. 
+\item Medical devices are designed and packed in such a way that they are not adversely affected by transport or storage.
+\item The benefits of medical devices outweigh any undesirable effects. 
+
+\end{itemize}
+
+The TGA, as well as the United State's equivalent body, the Federal Drug Authority (FDA) and the International Electrotechnical Commision (IEC) are informed by the International Organization for Standardization of the minimum requirements devices must meet. These requirements are decided by a panel of  "technical experts" in a given field who design the standards for a device, or device category, based off clinical testing different brands devices. Automated neonatal ventilators fall under \textit{ISO 80601-2-12:2011} \textit{Particular Requirements for basic safety and essential performance of critical care ventilators} \cite{iso}. Manufacturers and sponsors present medical devices to the TGA by application for market approval. The use of the standard is not mandatory,  especially in cases where there is no relevant standard. In these cases, the TGA takes into consideration clinical evidence and a medical device risk category: Class I low risk, II, IIa, III and high risk active implantable medical devices (AIMD). It is also possible in cases where there is no clinical evidence available examining device efficacy, the device can be registered as low risk and therefore used on patients via expert opinion alone \cite{muzza}. \\
+
+The TGAs lack of thoroughness, transparency and their apparent inadequacy to respond in a timely fashion to findings of major risks of devices are critiques made by Tracy and Hinder at Westmead NICU, as well as other clinicians in a recent presentation to the TGA. Furthermore, the pace of technological innovation in the field of neonatal ventilation, especially with regard to new complex algorithms and modes, means that there possibly are unknown safety concerns that the TGA cannot account for under the current structure \cite{muzza}.  It is for this reason that one of the purposes of this thesis is to provide a foundation for gathering data to present to the TGA so that the process of any necessary legislation changes can begin. \\
+
+
+A number of recent papers have identified consistent errors induced by automated ventilators that can cause severe damage to patients. Hence,the \textit{ISO 80601-2-12:2011} is presently under review. Nonetheless, until the reviews completion, new devices on the market must only meet the present conditions. Some of the major published findings and observations that have lead to this review are:
+\begin{itemize}
+\item The scope of standards for critical care ventilators does not cover a number of delivery modes used with devices in neonatal intensive care units \cite{muzza}. \textit{ISO 80601-2-12:2011} Section 201.1.1 states \cite{iso}, "This International Standard does not specify requirements for medical electrical equipment that is intended solely to augment the ventilation of spontaneously breathing patients within a professional healthcare facility", and, "This International Standard is not applicable to continuous positive airway pressure (CPAP), ventilatory support, transport ventilators, and high frequency oscillatory ventilators".
+\item Ventilators in CPAP mode regularly experience partial to complete expiratory limb occlusion due to water accumulation, causing dangerous pressurization and inappropriate alarms. They fail to display correct delivered airway pressure during simulated partial and total occlusion  \cite{hinder2016}. Therefore, most neonatal ventilators that have been permitted by the TGA for patient care fail to meet requirements for 'Obstruction Alarm Condition' (201.12.4.107) and 'Partial Occlusion Alarm Condition' (201.12.4.108) \cite{muzza} in the \textit{ISO 10651.4-2004}. This standard has since been withdrawn and it is expected that the appropriate revisions will be made in the revisions of \textit{ISO 80601-2-12:2011}.
+\item The ISO standard presently does not advise testing criteria for patients that weigh up to 10kg with regard to minimum PEEP valve settings in TPR devices \cite{hinder2019t}.
+
+\end{itemize} 
+
+Given the shortcomings of the present Standards in the area of neonatal resuscitation, it is clear that independent studies in NICUs such as the one being undertaken in this thesis are essential to ensure the appropriate and safe therapy of some of our most fragile patients.
+
+
+
+%Chapter 3 Core study One: active lung model ------------------------------------------------------------------------------
+\chapter{Core Study One: Verification and Validation of a Neonatal Active Lung Model}
+\section{Abstract}
+\section{Background}
+\subsection{Motivation}
+Presently, the ASL 5000 Adult/Neonatal Breathing Simulator is considered by many to be the best bench-top model that is market available. However, it’s validity is questionable. Some of the major concerns include:
+
+\begin{itemize}
+\item{The scale of components does not permit high precision measurements of ventilator performance. The piston volume and some tube diameters are adult sized, which impacts the airflow dynamics. There is a far higher amount of dead space in the model than a real infants lungs, which will cause some distortions when there are high pressure swings from gas compression \citep{thomas}.}
+\item{Volumetric flow is not calculated by an external pneumotachograph, rather, from piston movements and compressible volume. Therefore measurements of volumetric flow and pressure can not be considered accurate. If there was, for example, an internal leak, flow was turbulent, or gas had undergone significant expansion/contraction, then the calculated value would be significantly inaccurate \citep{thomas}.}
+\item{Though its motor is strong, its mass and internal friction cause it to respond too slowly at a high respiratory rate \citep{thomas}.}
+\item{The software is difficult to use \citep{thomas}.}
+\item{It can not replicate any lung compartment inhomogeneity \citep{stank2017}.}
+\end{itemize}
+
+Recently (circa 2018) a new neonatal active lung model became available for purchase known as the GINA (Dr. Schaller Medizintechnik \texttrademark, Dresden, Germany). Clinicians at Westmead Hospital, Australia and researchers at the Karolinska Instituet, Sweden, took interest in it. This is because it was designed by an expert in the field of neonatal respiration, Dr. Peter Schaller, and it was the first model designed specifically and singularly to model the neonates airways. As it was so new and quite unknown, no papers or data had been published assessing its validity. In the interest of finding better ways of testing neonatal respiratory equipment, a GINA was purchased by the team at Westmead Hospital NICU with the first task of testing its validity.
+
+\subsection{GINA's design}
+The GINA is a hybrid mechanical-software model and an active simulator. It consists of two parts: the mechanical model which will be referred to here-out as the NALM box, and the GINA software. The NALM is a single compartment model which uses a microchip to drive a linear voice coil motor (VCM) which modulates air movement in and out of a cylinder (fig. \ref{nalm}). Inspiration is active and expiration is passive, which is agrees with the majority of the literature. The following parameters are adjustable and cause physical changes in the machine:
+
+\begin{description}
+\item[Tube resistance] is realised by endotracheal tubes (2mm, 2.5mm, 3mm and 5mm) which are manually switched by a dial on the NALM. The smaller 3 tubes are made of Vygon (a PVC composite regularly used as an ETT), the 5mm is made from silicon. These materials are known to have similar mechanical characteristics to endotracheal tissue.
+\item[Airway resistance] (cmH2O) is realised through seven thin walled stainless steel tubes of differing internal diameter which are connected in parallel, which leads to dominating linear behaviour (ie. resistance is most affected by tube diameter and not by frictional resistance.) These are manually changed via a dial on the NALM.
+\item[Compliance] can be realised internally or externally. The internal compliance ($C_int$) represents dynamic compliance. The value is set on the GINA in the range of 0.3 to 3 ml/hPa, and the user may select whether it is modelled linearly or sigmoidally. This setting causes a proportional counterforce to be applied to the piston cylinder via a voltage difference. External compliance is realised by attaching one of two sizes of isothermal lung model (wide neck flasks filled with steel wool). External compliance represents non dynamic compliance.
+\item[Pressure of the respiratory muscles] ($Prm$) is set by the user on GINA to simulate the spontaneous breathing effort of the patient. This parameter adjusts the start and end points of the piston and controls volume output.
+\item[Leak] is realised through a luer-lock valve which can be triggered to open and close at certain pressures, set by the user on GINA.
+\item[Breath frequency and inspiratory and expiratory time constants] are set in GINA are alter the rate of piston movement \citep{gina}.
+\end{description}
+
+The GINA software is a LabView based program (fig. \ref{fig:images}). In addition to controlling the parameters mentioned above, the GINA interface displays real-time signals of parameters including: 
+\begin{description}
+\item [Pressure] at the (i) y piece outlet ($P_y$), (ii) endotrachea ($P_etr$) , and (iii) alveoli ($P_a$). These pressures are each measured by the differential pressure transducer part of a pneumotachograph.
+\item [Volumetric flow rate] is measured by the pneumotachograph (fig. \ref{fig:pneu})  at the breath outlet.
+\item [Tidal volume] ($V_t$) is calculated according to the integral of flow.
+\item [Lung volume] ($V_p$) is calculated as the volume of air moved by the piston plus cylinder dead space.
+\item [Pressure of the respiratory muscles], and
+\item [Channel X] is a function which can plot many parameters including work of breathing or the inspiration step function.
+\end{description}
+
+The user also has control over breathing frequency ($freq$), inspiratory time ($t_in$), inspiratory time constant ($\tau_in$) and expiratory time constan ($\tau_exp$). GINA has built in functions to simulate apnea, sigh, or random breathing. GINA has the option to record and output data at a sample rate of the users choice. The continuous data for each of the signal parameters listed above is output as a TDMS file.
+
+%figures------------------
+\begin{figure}
+		
+	\begin{subfigure}{.3\textwidth}
+	\centering	
+	\includegraphics[width=\textwidth]{gina.PNG}	
+		\caption[NALM box]{The NALM box} 
+		\label{fig:nalm}	
+	\end{subfigure}
+	
+	\begin{subfigure}{.9\textwidth}
+	\centering	
+		\includegraphics[width=\textwidth]{GINAs_interface.PNG}	
+		\caption{GINAs interface (full screen is trimmed)}
+		\label{fig:gina}	
+	\end{subfigure}
+	\caption{Images of the GINA neonatal active lung model}
+	\label{fig:images}
+\end{figure}	
+	
+\begin{figure}
+	\begin{center}	
+		\includegraphics[width=0.5\textwidth]{Screen-Pneumotach.PNG}	
+		\caption[Pneumotachograph]{A pneumotachograph determines flow rate bt calculating the pressure differential across a screen of known resistance \citep{pneu}} 
+		\label{fig:pneu}	
+	
+	\end{center}
+\end{figure}
+
+
+%end figures--------------------------
+\section{Aims}
+The aims of this series of experiments are as follows:
+\begin{enumerate}
+\item 
+The primary aim of this study is to determine whether the GINA/NALM is a valid active mechanical model of a neonatal lung. Specifically, there will be two criterion for assessing model validity. These are (1) Accuracy of measurement, and (2) Realistic imitation of neonatal respiratory behaviour.
+\item The secondary aim is to evaluate the model for its usability as a bench-top model for testing ventilation equipment. This aim is not experimentally assessed but is discussed in the discussion section.
+\end{enumerate}
+
+\section{Methodology for aim 1: Assessing GINA measurement accuracy}
+\subsection{Experimental Design and Outcomes}
+The physical, non-calculated measurements of GINA are take via pneumotachograph. These are volumetric flow $f_v$ and pressure $P$. Therefore, these were the parameters that were chosen for accuracy testing. For the pressure recording, y-piece pressure $P_y$ was chosen because: (i) it can be tested without taking apart the NALM, (ii) the pneumotachographs in NALM are all the same kind \citep{gina}, and, (iii) it is used far more frequently in equipment testing than endotracheal pressure and alveolar pressure. \\
+
+The FlowAnalyzer\texttrademark (imtmedical, Buchs (SG) . Switzerland) device was chosen as the benchmark measurement device, as it is capable of measuring low flow with high accuracy \citep{flow}. The experimental synopsis was to hermetically connect the FlowAnalyzer and GINA and have each device simultaneously data record while GINA output simultaneous breaths. The data sets were then compared using a purpose built software, the \textit{GINA Validator} which determined the accuracy of the GINA data. The experimental apparatus and software design are described in the following sections.
+
+\subsubsection{Experimental apparatus}
+Before conducting the experiment, all measures were taken to minimise systemic error. The following protocol was adhered to every time.
+
+\begin{enumerate}
+\item Ensure that the NALM-to-computer and FlowAnalyser-to-computer USB connections are set up.
+\item Calibrate each device according to the procedures described in their manuals.
+	\begin{enumerate}
+		\item NALM calibration required a specific set up in which a small pressure (30-50hPa) was manually delivered to it's pressure outlet. We (myself and Murray Hinder) conducted this using a small glass syringe. We determined the pressure delivered with the FlowAnalyzer. The apparatus is shown in fig. \ref{fig:cali}.
+	\end{enumerate}
+\item Set up apparatus according to fig. \ref{aparatus}. Ensure seals are as airtight as possible, the system is closed using a test lung, and that the silicon tubes between the NALM breath outlet cut to the minimum possible length and is not kinked.
+\item Switch on both devices. Set GINA to breathe for 10 minutes to ensure devices are warm.
+\item Check that the sample rate on each machine is set to 200Hz.
+\end{enumerate}
+
+%experimental aparatus pictures
+\begin{figure}
+
+		
+	\begin{subfigure}{.99\textwidth}	
+		\includegraphics[width=0.99\textwidth]{setup2.PNG}		
+		\caption{}
+		\label{fig:cali}
+	\end{subfigure}
+	
+	\begin{subfigure}{.99\textwidth}
+		\includegraphics[width=0.99\textwidth]{setuppic.PNG}		
+		\caption{}
+		\label{fig:aparatus}
+	\end{subfigure}
+	
+	\caption[Aparatus' for GINA validation]{Aparatus' for GINA validation. (a) Calibration set-up, (b) Aparatus for testing} 
+	
+	
+\end{figure}
+
+Following this process, the experimental breathing parameters were set on GINA. Then one minute of simultaneous continuous data logging on each machine was commenced. The independent variables (tested separately) were $Prm$ (at 5, 20, 35 N) and $freq$ (at 40, 60, 80 breaths per minute). Values were selected  to represent the spectrum of breathing. Constant values were $C_int = 1.5$, $Prm = 20$, $freq = 60$  $l.lungVol =10ml$, $\tau_in = 60$, $\tau_exp = 60$ and $t_in = (0.5, 0.4, 0.3 s)$ for the respective frequencies. The endotracheal tube was set at 2.5mm diameter and airway resistance was set to 3cmH2O. For each setting profile, 2 tests were run. Therefore there was a total of 10 tests.\\
+
+TDMS files were converted to excel files using a simple excel pluggin.\\
+
+The output data was assessed using the \textit{Gina Validator} software which uses Bland-Altman analysis to compare signal profiles and determine whether the signals are significantly different. A non-significant difference was determined as when the linear regression of the differences did not intercept the 95{\%} confidence intervals, and the mean difference value was within 0.1 (mbar for pressure, l/min for flow) of zero. In addition to this measure of validity, I decided to run a further Bland-Altman analysis in SPSS comparing the peaks and troughs of the pressure sinals between the GINA and FlowAnalyser to determine whether the difference was within an acceptable range of error. Each machine has an error allowance of 0.2mbar.
+
+
+\subsection{Design of GINA Validator software}
+The \textit{GINA Validator} software was written in Matlab code. This language was selected for its speed with data processing and its usability, as the software may need to be amended to in the future by others and many clinicians and engineers are well versed in Matlab. An object-oriented code style was selected as it used less RAM than spaghetti code, is less corruptible, is easily read and can have functions added in a straightforward way. \\
+
+\textit{GINA Validator} has a simple graphical user interface (GUI) which the user interacts with (see fig. \ref{fig:gvgui}). This was designed using Matlab's GUIDE feature.  The software design is divided into the following three sections: User interface, Error handling, and Code flow and function design.
+
+\subsubsection{User interface}
+The user interface was designed to be easy to use. Refer to figure \ref{fig:gvgui} for the following. The user is able to browse for and select the input files from GINA and FlowAnalyzer and write in the output file name. Selecting 'Go' runs the data analysis. Depending on the validity test (the Bland-Altman analysis previously described), the message "Validation passed" or "Validation failed" will fill the box on the app. Selecting 'Reset' will restore the apps original settings. Selecting 'Help Menu' will cause the pdf instruction manual to be opened. See appendix \ref{appendix:GV} for the instruction manual.
+
+\begin{figure}
+\begin{center}	
+		\includegraphics[width=0.7\textwidth]{GV_app.PNG}	
+		\caption{Gina Validator user interface}
+		\label{fig:gvgui}		
+	\end{center}
+
+\end{figure}
+
+\subsubsection{Error Handling}
+A necessary component of any software is that it can catch errors so that the progam doesn't crash or get caught in an infinite loop, wasting RAM. Once an error is caught it should be handled. This means the user should be informed of what the issue is and prompted to submit any needed information. The program will then either continue with the provided information or stop and reset. In any case, the program should tell the user exactly what is happening. Errors that are caught in this way should only be those that occur as a result of aberrant input, not bugs. Figure \ref{fig:flow1} shows the flow process of how errors are caught including the problem, the prompts/error messages, response handling, and final action of the software
+
+\begin{landscape}
+\begin{figure}
+	\centering
+		\includegraphics[width=1.5\textwidth]{flow1.PNG}		
+		\caption{Handling errors in GINA Validator software}
+		\label{fig:flow1}
+\end{figure}
+\end{landscape}
+
+\subsubsection{Code flow and function design}
+There are three primary matlab files: \textit{FileValidator}, \textit{main} and \textit{Tester} . The full code for the first files is contained in appendix \ref{appendix:A}.
+This is the code flow: \textit{FileValidator} collects user input, \textit{main} tests that the files are of the same event and then transforms data into tables for analysis, and \textit{Tester} is fed this data and analyses it to determine validity. 
+\begin{itemize}
+	\item FileValidator.m creates the GUI application. The functions code the layout and the capabilities of each item (button, textbox etc) on the interface. For example, the browse buttons opens the file browser into the directory named $Tests_Data$, a subdirectory of the software directory and allows the user to select files of the relevant file time (.xlsx for GINA, .log for FlowAnalyzer)
+Data is collected, tested for errors (see section \textit{Error Handling} and sent to the main.m file as global variables. 
+	\item main.m imports the files, tests that the signals are of the same event and then transforms the data into tables for analysis.
+	\item	Tester.m runs data analysis to determine signal validity and saves appropriate data and plots into a directory named according to provided by the user to the GUI. This directory is saved under the $Test_Output$ directory. 
+\end{itemize}
+
+This is the code flow and function design of \textit{Tester}. Refer to the full code in appendix \ref{appendix:A} \\
+
+\subparagraph{function: obj = Tester}
+\begin{labeling}{alligator}
+\item[Code line reference] 53-167
+\item[Input] datasets from GINA and FlowAnalyser, output folder name, signal time stamps.
+\item[Description] This is the object initialization function. The GINA output xlsx file is read in as a table. The output file folder is made in the Test\_Results subdirectory of the software directory. Input parameters are set as object properties. All other functions are called.
+\end{labeling}
+
+\subparagraph{function: filetrimmer}
+\begin{labeling}{alligator}
+\item[Code line reference] 415-494
+\item[Input]object properties
+\item[Description] This function trims the data to start from the same moment. This is done twice. First, by comparing time stamps. And second, by trimming both datasets to the first moment of monotonically increasing flow where the flow wave transitions from negative or zero to positive (see fig \ref{fig:delay}).
+\end{labeling}
+
+%Delay calc and flow trim figs
+\begin{figure}
+\centering
+
+		
+	\begin{subfigure}{.99\textwidth}	
+		\includegraphics[width=0.99\textwidth]{DelayCalc.PNG}		
+		\caption{}
+		\label{fig:trim}
+	\end{subfigure}
+	
+	\begin{subfigure}{.99\textwidth}
+		\includegraphics[width=0.99\textwidth]{signalstart.PNG}		
+		\caption{}
+		\label{fig:delay}
+	\end{subfigure}
+	
+	\caption[Data amendments in the GINA Validator]{Data amendment processes in the GINA Validator. (a) There is a signal processing lag between the GINA and the FA. The slope of the peak-to-peak differences used to scale the FA signal and correct for sample rate error  (b) Data is trimmed to the exact same start signal according to time stamp, phase shift, and then matching the first positive monotonically increasing slopes.} 
+
+\label{fig:calcs}
+
+\end{figure}
+
+%---------------------
+\subparagraph{function delayCalc}
+\begin{labeling}{alligator}
+\item[Code line reference] 493-539
+\item[Input]object properties
+\item[Description] This function calculates the linear regression of the peak-to-peak delay between time signals to calculate the scaling factor (see fig \ref{fig:trim}.
+\item[Points of interest] It was interesting to discover that there was a delay between signals that could not be attributed to phase shift. The delay was such that the signals appeared to be scaled differently in the time domain (see fig \ref{fig:lag}. Therefore this could not be due to the apparatus set up. Instead, it had to be because of a sample-rate error, meaning that in one or both machines there was a delay between signal trigger and signal recording. 
+\end{labeling}
+
+%flow without scaling
+\begin{figure}
+	\centering
+	\includegraphics[width=1.1\textwidth]{sre.PNG}		
+	\caption[Unscaled flow data from the GINA and FlowAnalyser]{Unscaled flow data from the GINA and FlowAnalyser}
+	\label{fig:lag}
+
+
+\end{figure}
+
+
+\subparagraph{function: labDataScaler}
+\begin{labeling}{alligator}
+\item[Code line reference] 407-413
+\item[Input]object properties
+\item[Description] This function multiplies the time domain of the FlowAnalyser data by the scaling factor to rectify the difference.
+\item[Points of interest]
+\end{labeling}
+
+\subparagraph{function: flowPlotter}
+\begin{labeling}{alligator}
+\item[Code line reference] 179-343
+\item[Input]object properties
+\item[Description] This function uses interpolates the flow signals for both devices and plots the signals against each other. Bland-Altman analysis is run.
+\end{labeling}
+
+
+\subparagraph{function: pressurePlotter}
+\begin{labeling}{alligator}
+\item[Code line reference] 259-345
+\item[Input]object properties
+\item[Description] This function uses interpolates the flow signals for both devices and plots the signals against each other. Bland-Altman analysis is run. Depending on the Bland-Altman outcomes of both flowPlotter and pressurePlotter, the parameter 'valid' is set to 1 (valid) or 0 (invalid). This determines the message validation message that will be displayed by the application.
+\end{labeling}
+
+
+\section{Methodology for aim 2: Assessing realistic behaviour}
+
+\subsection{Experimental design and outcomes}
+
+The assessment criteria for realistic behaviour were that:
+\begin{itemize}
+\item Breathing waveforms (flow, pressure etc) maintained correct morphology across the measurement spectrum for independent variables ($f_v, freq, Prm$) (see fig. \ref{fig:goodmorph} for example of good morphology
+\item Interactions could occur between the GINA and external devices and produce realistic outcomes.
+\item Changes in internal compliance were proportional to changes in work of breathing.
+\item Functions including leak, apnea, sigh and random worked as advertised by the manual.
+\end{itemize}
+
+Details of the former two assessments are described:
+
+\subsection{Assessing breathing waveforms}
+Realistic breath flow waves do not have any flat spots. A flat spot would indicate no change in flow, which in a dynamic system would never happen. As flow is dependent on volume changes, we determined that the simplest way of finding any flat spots was by looking for non-linearity in the $T_p$ vs. $T_v$ curve, and strange morphology in $P_a$ vs. $T_v$ curves. CPAP was applied to the GINA while GINA was spontaneously breathing. Pressure levels were 2.5atm, 5atm, 7.5atm, 10atm and 12.5atm. GINAs endotracheal tube was set at 5mm, $Prm$ was 5 and Airway resistance was 3cmH2O. 
+
+\subsection{Assessing interactions}
+Interactions were assessed in two simple ways. The first was by attaching a ventilation machine (Babylog VN500, Draeger Medical, Lubeck, Germany) and visually assessing whether the flow wave display on the ventilator. The second was by delivering CPAP to the GINA and testing whether GINA could maintain a PEEP.
+
+%fig of good morph
+
+\begin{figure}
+\centering
+\includegraphics[width = 0.8\textwidth]{good_morph.PNG}		
+	\caption[GINA spontaneous breaths with good morphology]{Graphical output from GINA of spontaneous breathing with good morphology. There is no test lung or device attached to the breathing outlet. Compliance is internal, linear. Signals from top to bottom: (i, green) Alveolar pressure, (ii, red) Pressure at the y piece, (iii, black) Pressure of the respiratory muscles, (iv, blue) Tidal volume, (v, yellow) Flow. }
+	\label{fig:goodmorph}
+\end{figure}
+
+
+\section{Results}
+
+\subsection{Assessment of the accuracy of GINA}
+correlations and bland altman
+
+\subsection{Assessment of how realistic GINA's behaviour is}
+
+waveforms and compliance
+miscalc of breaths frequency
+leak and those other functions.
+
+%------- figs of results - Regular BA and Flow comparison
+\begin{figure}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{Bland-Altman_flow-test2final.PNG}		
+		\caption{Bland-Altman test on spont. breath data of flow with parameters: Flow=80, Prm=20. Mean = -0.02.}
+		\label{fig:baf2}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{Bland-Altman_pressure_test2.PNG}		
+		\caption{Bland-Altman test on spont. breath data of pressure at the y piece with parameters: Flow=80, Prm=20. Mean = -0.05}
+		\label{fig:bap2}
+	\end{subfigure}
+	\medskip
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{Bland-Altman_flow_test4.PNG}		
+		\caption{Bland-Altman test on spont. breath data of flow with parameters: Flow=60, Prm=35. Mean = -0.03}
+		\label{fig:baf4}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{Bland-Altman_pressure_test4.PNG}		
+		\caption{Bland-Altman test on spont. breath data of pressure at the y piece with parameters: Flow=60, Prm=35. Mean = 0}
+		\label{fig:bap4}
+	\end{subfigure}
+\end{figure}
+
+
+%figs of flow and pressure comparison
+\begin{figure}
+
+\begin{subfigure}[t]{0.99\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{flowTest_test2.PNG}		
+		\caption{Comparison of flow signals on spont. breath data with parameters: Flow=80, Prm=20}
+		\label{fig:f2}
+	\end{subfigure}
+	
+
+	\begin{subfigure}[t]{0.99\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{pressureTest_test2.PNG}
+		
+		\caption{Comparison of flow signals on spont. breath data with parameters: Flow=80, Prm=20}
+		\label{fig:p2}
+	\end{subfigure}
+
+	\medskip
+
+	\begin{subfigure}[t]{0.99\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{flowTest_test4.PNG}
+		
+		\caption{Comparison of flow signals on spont. breath data with parameters: Flow=60, Prm=35}
+		\label{fig:f4}
+	\end{subfigure}
+
+\end{figure}
+
+\begin{figure}\ContinuedFloat
+
+
+	\begin{subfigure}[t]{0.99\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{pressureTest_test4.PNG}
+		
+		\caption{Comparison of flow signals on spont. breath data with parameters: Flow=60, Prm=35}
+		\label{fig:p4}
+	\end{subfigure}
+	\caption{Flow and pressure signal comparison between GINA and FlowAnalyser}
+	\label{fullsigs}
+
+\end{figure}
+
+
+
+
+%figs of other bland altman
+\begin{figure}
+\centering
+	\begin{subfigure}[t]{0.9\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{fmaxs2.PNG}		
+		\caption{Comparison of flow maximums on spont. breath data with parameters: Flow=80, Prm=20}
+		\label{fig:baf2max}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}[t]{0.9\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{fmins2.PNG}		
+		\caption{Comparison of flow maximums on spont. breath data with parameters: Flow=80, Prm=20}
+		\label{fig:baf2min}
+	\end{subfigure}
+\end{figure}
+\begin{figure}\ContinuedFloat
+\centering
+	\begin{subfigure}[t]{0.9\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{pmaxs2.PNG}		
+		\caption{Comparison of flow maximums on spont. breath data with parameters: Flow=60, Prm=35}
+		\label{fig:bap2max}
+	\end{subfigure}%	
+	\hfill
+	\hfill
+	\begin{subfigure}[t]{0.9\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{pmins2.PNG}		
+		\caption{Comparison of flow maximums on spont. breath data with parameters: Flow=60, Prm=35}
+		\label{fig:bap2min}
+	\end{subfigure}
+	\caption{Bland-Altman analysis comparing flow and pressure maximums and minimums between GINA and FlowAnalyser}
+	\label{fig:bas}
+\end{figure}
+
+%figs of improper output shape
+
+
+
+%figs of bad morph
+\begin{figure}
+\centering
+	\begin{subfigure}[t]{0.99\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{presVolDistort.PNG}		
+		\caption{}
+		\label{fig:bad1}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}[t]{0.7\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{volVolDistort.PNG}		
+		\caption{}
+		\label{fig:bad2}
+	\end{subfigure}
+	
+\caption[Bad morphology of spontaneous breaths in GINA]{Bad morphology of spontaneous breaths in GINA. These plots show evidence of distortion across a range of applied pressures via CPAP and TPR. (a) Distortion in pressure volume curves, (b) distortion in volume (tidal) volume (cylinder) curves.}
+
+\label{fig:morph}
+
+\end{figure}
+
+% nalm spike
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{TV_bad_peak.PNG}		
+	\caption{Improper breath due to NALM  mechanical error}
+	\label{fig:nalmerror}
+
+\end{figure}
+
+
+
+\section{Discussion}
+
+Perhaps the most striking feature of this data is its shape. If we think about what's actually happening at a physical level of air moving through tubes between the NALM and the FlowAnalyser it's easy to understand. Elastic recoil of the test lung, turbulence of changing direction of air, pressure differential
+evaluation of the useability of GINA including results output format
+evaluation of software usability
+
+extra parameters
+
+looked at v1-3 but the volume issue etc
+
+software assessment - how things aren't obvious
+
+
+%Chapter 4 Core Study 2 --------------------------------------------------------------------------------------------------
+\chapter{Core Study Two:}
+
+\section{Abstract}
+\section{Background}
+Althougb the ASL 5000s software has been described as "difficult to use", one of its great advantages is that it calculates and outputs breath-by-breath data for ... parameters.
+The GINA does presently have this capacity. Additionally, GINA does not record parameter changes that are made during the signal recording. Therefore, it is presently useless to run any test simulations where the GINAs breathing changes due to internal stimuli (eg, user changing frequency, Prm etc). This seriously caps her usability.  Personal communications with the manufacturers revealed that presently, they are not looking to develop such capabilities in the near future. Therefore, if the GINA is to be used soon for testing equipment, these features needs to be built in-house.
+
+\section{Aim}
+The aim of this study is to create a software for clinicians and researchers wanting to use the GINA to test devices. The software should read in GINA's output and transform it into a log of breath-by-breath parameters which can be used in statistical analysis.
+\section{Methodology}
+\subsection{Design of the GINA Analyser software}
+The \textit{GINA Analyser} software was written in Matlab code. This language was selected for its speed with data processing and its usability, as the software may need to be amended to in the future by others and many clinicians and engineers are well versed in Matlab. An object-oriented code style was selected as it used less RAM than spaghetti code, is less corruptible, is easily read and can have functions added in a straightforward way. \\
+
+Respiratory clinicians and researchers, Thomas Drevhammer, Mark Tracy and Murray Hinder, and myself decided that at this stage and within the available timeframe, we required the following features:
+\begin{itemize}
+\item A unique identifier for each test
+\item Calculations of the number of breaths and, for each breath: $V_t, V_p, t_in, t_ex, P_y$ maximum, minimum and mean, $P_etr$ maximum, minimum and mean, $P_a$ maximum, minimum and mean.
+\item The ability to comment in additional details about each test run.
+\end{itemize}
+
+\textit{GINA Analyser} has a simple graphical user interface (GUI) which the user interacts with (see fig. \ref{fig:gvgui}). This was designed using Matlab's GUIDE feature. The software design is divided into the following three sections: User interface, Error handling,  Code flow and function design, and, Output.
+
+\subsubsection{User interface}
+
+The GINA Analyser application was designed for easy and simple usage. Full instructions are included in appendix \ref{appendix:GA}. Figure \ref{fig:GA_app} shows the application interface.  By clicking the 'browse' button, a search in the directory named GA\_TestData, a subdirectory of the software directory opens. Here the user can to select multiple xlsx files.
+The user can choose to create a new log of the calculated breath-by-breath data, or add to an existing log. They can choose to calculate breaths using the work of work of breathing signal or the flow signal. Selecting 'Go' runs the data analysis.  Selecting 'Reset' will restore the apps original settings. Selecting 'Help Menu' will cause the pdf instruction manual to be opened.
+
+\begin{figure}
+\centering
+	\includegraphics[width=0.7\textwidth]{GA_app.PNG}		
+		\caption{GINA Analyser app interface}
+		\label{fig:GA_app}
+\end{figure}
+
+
+
+\subsubsection{Error handling}
+Figure \ref{fig:flow2} shows the flow process of how errors are caught including the problem, the prompts/error messages, how the user response to this is handled, and what action occurs.
+\begin{landscape}
+\begin{figure}
+		\includegraphics[width=1.5\textwidth]{flow2.PNG}		
+		\caption{Handling errors in GINA Analyser software}
+		\label{fig:flow2}
+\end{figure}
+\end{landscape}
+
+\subsubsection{Code flow and function design}
+
+There are three primary matlab files: \textit{GINA\_Analyser, ga\_main} and \textit{GA\_Tester}. The full code for the first files is contained in appendix \ref{appendix:B}.
+This is the code flow: GINA\_Analyser collects user input, ga\_main... GA\_Tester ... 
+\begin{itemize}
+	\item \textit{GINA\_Analyser} creates the GUI application. The functions code the layout and the capabilities of each item (button, textbox etc) on the interface. 
+Data is collected, tested for errors (see section \textit{Error Handling} and sent to the \textit{ga\_main} file as global variables. 
+	\item \textit{ga\_main} imports the files. If the user has chosen to add to an existing log file, ga\_main checks whether any of the files have already been added and prompt the user to decide to add it again or not by looking at the files own log of added files (fig \ref{out2}). Remaining filenames and the flag representing the users choice of breath calculation by WOB or Flow are sent to GA\_Tester.
+	\item	\textit{GA\_Tester} runs the analysis on the imported data and tabularises it. The unique identifier for each test is the test name. Output is returned to the main function.
+\item \textit{ga\_main} Compiles the table and saves the excel output file. 
+\end{itemize}
+
+
+
+This is the code flow and function design of \textit{GA\_Tester}. Refer to appendix \ref{appendix:B}
+\subparagraph{function obj = GA\_Tester}
+\begin{labeling}{alligator}
+\item[Code line reference] 47-58
+\item[Input] filename, flag, spontcheck
+\item[Description] This is the object initialization function. The GINA output xlsx file is read in as a table. The flag indicates whether user selected breath calculation by WOB (flag=1) or Flow (flag=2). Spontcheck indicates if the box for non-spontaneous breaths was checked. These parameters are set as object properties. Function bpb\_analyser is called.
+\end{labeling}
+
+\subparagraph{function bpb\_analyser}
+\begin{labeling}{alligator}
+\item[Code line reference] 62-170
+\item[Input] object properties, flag
+\item[Description] This function tries to call all remaining functions. The directory for saving data is created and all open figures are saved to it. The log table is created: headers are set, input file name is used for the rownames, table size is set according to the number of calculated breaths. Table is populated and bad data is trimmed. If an error occurs during the process, this is caught and an error message displayed. All open figures are saved to the directory.
+\end{labeling}
+
+
+\subparagraph{function freqfinder}
+\begin{labeling}{alligator}
+\item[Code line reference] 174-304
+\item[Input] object properties, flag
+\item[Description] Function is divided into 2 if statements: if flag == 1, and if flag ==2  to guide the data analysis process.
+\begin{itemize}
+\item Flag == 1:
+\begin{itemize}
+\item WOB signal read in from file. The WOB signal is 0 during expiration and non 0 during inspiration with a vertical drop from peak to 0 when inspiration ends. Time signal is adjusted to begin at 0 from startpoint. Data is trimmed so that it starts when WOB = 0. Peak analysis determines number of total breaths as peaks - 1. 
+\end{itemize}
+\item Flag == 2:
+\begin{itemize}
+\item Flow signal read from file. If data is of spontaneous breaths, a strong lowpass filter is applied. This maintains peak height. If data is of non spontaneous breaths, a butterworth filter is applied. It filters the noise of the non-spont signal, but also chops peaks. Breaths are counted as every time the signal goes from negative to positive.
+\end{itemize}
+\end{itemize}
+\end{labeling}
+
+
+\subparagraph{function inspexptime}
+\begin{labeling}{alligator}
+\item[Code line reference] 308-487
+\item[Input] object properties, flag
+\item[Description]  Function is divided into 2 if statements: if flag == 1, and if flag ==2  to guide the data analysis process.
+\begin{itemize}
+\item Flag == 1:
+\begin{itemize}
+\item Based on when the signal is zero and non zero, inspiration starts and timelength, and expiration starts and timelength, are calculated. Data trimmed to start of first inspiration, and any signal after last full breath is chopped off.
+\end{itemize}
+\item Flag == 2:
+\begin{itemize}
+\item Based on where inspirations start (points of signal crossover from negative or flat to positive monotonic increasing) and expirations start (points of crossover from positive monotonic decreasing to negative monotonic decreasing), inspiration starts and timelength, and expiration starts and timelength, are calculated. Data trimmed to start of first inspiration, and any signal after last full breath is chopped off.
+\end{itemize}
+\end{itemize}
+\end{labeling}
+
+
+\subparagraph{function tidalfinder}
+\begin{labeling}{alligator}
+\item[Code line reference] 491-541
+\item[Input] object properties, tnum (flag for $T_v$ or $T_p$)
+\item[Description] Function uses peak analysis to determine tidal volume and piston volume.
+\end{labeling}
+
+\subparagraph{function pressure\_data}
+\begin{labeling}{alligator}
+\item[Code line reference] 545-722
+\item[Input] object properties, pnum (flag for $P_y$, $P_etr$, $P_a$
+\item[Description] Function puts pressure data through a lowpass filter. Peak analysis is used to determine pressure minimums and maximums for each breath.
+\end{labeling}
+
+
+%---- figures of the process
+\begin{figure}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{badbutter.PNG}		
+		\caption{Butterworth filtering on flow chops off peaks.}
+		\label{fig:badbutter}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{startof_firstbreath.PNG}		
+		\caption[Determining the start of the first breath on the flow wave]{Determining the start of the first breath on the flow wave. Data is trimmed to this point.}
+		\label{fig:startbreath}
+	\end{subfigure}
+	\medskip
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{ISinspexp.PNG}		
+		\caption{Determining inspiration and expiration using WOB}
+		\label{fig:WOBcalc}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{InspExpFlow.PNG}		
+		\caption{Determining inspiration and expiration using flow}
+		\label{fig:flowCalc}
+	\end{subfigure}
+\end{figure}
+
+\begin{figure}\ContinuedFloat
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{breath-dec-miscalc2.PNG}		
+		\caption[Miscalculation of inspiration and expiration starts.]{Miscalculation of inspiration and expiration starts. Noisy non-spontaneous breathing flow signal requires a strong filter to remove noise.}
+		\label{fig:miscalc}
+	\end{subfigure}%
+	\hfill
+\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{volPeaks.PNG}		
+		\caption{Determining volume for each breath.}
+		\label{fig:volP}
+	\end{subfigure}	
+	\medskip
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{midiDpres.PNG}		
+		\caption{Miscalcution of pressure maximums and minimums on noisy signal}
+		\label{fig:pMM}
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{good_pres.PNG}		
+		\caption{Determining pressure maximums and minimums}
+		\label{fig:goodpres}
+	\end{subfigure}
+
+\caption{GINA Analyser, GA\_Tester output and code progression}
+\end{figure}
+
+\subsubsection{Output}
+Output is saved as a 2-tab excel file. The first tab has the breath-by-breath analysis (fig \ref{fig:out1}). The second tab has the log of files added (fig \ref{fig:out2}).
+
+\subsection{Testing GINA Analysers capabilities and output accuracy}.
+The following capabilities were tested:
+\begin{enumerate}
+\item GINA Analyser's ability to calculate output parameters for spontaneous breathing by the WOB method or flow method. The independent variables were $freq$ at 30, 60 and 120 bpm, and $Prm$ at 5, 15 and 25 N. Dependent variables were $C_int$ (1.0), l.lungVol (10), endotracheal diameter (5mm) and airway resistance (2 cmH2O). $t_in, \tau_in$, and $\tau_out$ were changed as required to create ideal flow wave morphology.  The output parameters tested were $V_t, t_in, t_ex$ and $P_y$ maximum, minimum and mean. $V_p$,  $P_etr$ maximum, minimum and mean, $P_a$ maximum, minimum and mean didn't need to be assessed as the functions \textit{tidalfinder} and \textit{pressure\_data} are already tested by $V_t$ and $P_y$ respectively. Correlation analysis was used to compare the signals calculated by each method to each other and to measurements taken manually off the original output signal, using a TDMS file viewer. Additionally, manual measurements were taken for both the filtered and unfiltered pressure signals and Bland-Altman analysis was performed to determine whether the filter significantly changes the output values.
+\item GINA Analysers ability to complete all functions for long data sequences. Five 10 minute sequences were tested with independent variables $freq$ at 30, 60 and 120 bpm and  $Prm$ at 5, 15 and 25 N .
+\item GINAs ability to calculate output parameters for non-spontaneous breathing by the flow method. The independent variable was $freq$ at 30, 60 and 120 bpm.  Dependent variables were $C_int$ (1.0), l.lungVol (10), endotracheal diameter (5mm), airway resistance (2) $t_in$ (0.4s), $\tau_in$ (60), and $\tau_out$ (60).
+\end{enumerate}
+
+
+\section{Results}
+Outputs? What can it do? 
+
+%---figs of output
+\begin{landscape}
+\begin{figure}
+\includegraphics[width=1.6\textwidth]{GA_output.PNG}
+		\label{fig:out1}
+		\caption[GINA Analyser output file, breath by breath data]{Example of GINA Analyser output file, sheet 1- Breath by breath calculations.}
+
+\end{figure}
+\end{landscape}
+
+\begin{figure}
+\includegraphics[width=0.8\textwidth]{GA_output_2.PNG}
+		\label{fig:out2}
+		\caption[GINA Analyser output file, data log]{Example of GINA Analyser output file, sheet 2- log of files added.}
+\end{figure}
+%--- end fig
+
+%figure of 10m mins of data and 10s 10s
+
+
+\begin{figure}
+	\begin{subfigure}[t]{0.49\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{10minpresID.PNG}		
+		\caption[GINA Analyser can work on long data sets.] {GINA Analyser can work on long data sets.}
+		\label{fig:10min}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.7\textwidth}
+		\centering
+		\includegraphics[width=\linewidth]{10s10sPres_pic.PNG}		
+		\caption[GINA Analyser calculating pressure max and min for alternating spontaneous and non-spontaneous breathing.]{GINA Analyser is unable to correctly calculate pressure max and min for alternating spontaneous and non-spontaneous breathing because of the noise as the signals switch.}
+		\label{fig:10s10s}
+	\end{subfigure}
+
+\caption{GINA\_Analyser capabilities}
+	
+\end{figure}
+
+
+\subsection{Accuracy of Output Data}
+Discussion with Mark Tracy, 2dp.
+\subsection{Assessment of GINA Analyser usability}
+\section{Discussion}
+Limitations?
+
+
+
+
+
+%Chapter 5, case study 1 --------------------------------------------------------------------------------
+\chapter{Case Study One: Interfacing ventilators with neonatal patients }
+
+One of the most common methods of interfacing ventilators with patients for the treatment of respiratory distress syndrome is through endotracheal intubation \citep{strong1977endotracheal}. This avoids any issues caused by upper airway collapse and there is less leak in the system than a face mask or nasal prongs (see fig. \ref{fig:endo1}). A recent (2016) study found that adverse events occur in 4 out of 10 intubations of neonates, with severe events occuring 8.8{\%} of the time. Predictors of adverse events include multiple intubation attempts and emergency intubations. Adverse events that can be associated with intubation include CPR, tracheal perforation, airway bleeding or trauma, rigid-chest syndrome, emesis, pneumothorax, mainstream bronchial intubation, hypoxia and bradycardia \cite{hatch2016endotracheal}. In the first part of this chapter we explore what intubation involves, the mechanical interaction of the ETT with the endotrachea, and, the material properties of endotracheal tubes (ETT). In the second section we look at how ETT design has changed with time and continued developments. \\
+
+\section{The practice and effects of endotracheal intubation}
+Modern ETTs are made from polyvinyl chloride composites (PVC) or polyurethane composites. These are tough but flexible polymers that are relatively bio-inert and have many biomedical applications. The ETT used on older children and adults is a cuffed tube. In these the tube diameter is smaller than the endotrachea and so a small cuff on the tube is inflated to hold the ETT in place and prevent leakage. However, the diameter of the neonates endotrachea is very small (approx 3mm for extreme and very preterm infants \citep{ett}), and, some research suggests that it may be shaped conically, preventing proper cusp inflation \citep{strong1977endotracheal}. Since tube resistance increases according to diameter reduction to the fourth exponent, it is most common practice to use uncuffed endotracheal tubes in neonates in order to minimise this resistance (see fig \ref{fig:endo2}). Additionally, as described in section \textit{Neonatal Respiratory Physiology}, the neonatal airways are substantially less elastic and are thin and weak. Although the neonatal endotrachea is supported by cartilage, the tissue lining the walls of this area relatively flimsy. There have been reports that in children under 8 years old, the pressure of the cuff on the weak endotracheal walls is associated with mucosal injury leading to subglottic stenosis \citep{thomas2016cuffed}. Subglottic stenosis is essentially the narrowing of the airway due to the build up or scar tissue, which obviously causes airways to be stiffer, creates greater airway resistance and requires the infant exert more energy to breathe. Injury to the mucosa and cilia of the airway damages the system by which hazardous particles including germs are removed from the lungs. These injuries can cause lifelong morbidity. It is commonly held in most NICUs that uncuffed ETTs are best suited to the biomechanical environment of the infant airway.\\
+%----tube insertion, cuffed and uncuffed tube
+
+\begin{figure}
+\centering
+	\begin{subfigure}{0.4\textwidth}
+		\includegraphics[width =\linewidth]{endo1.jpg}
+		\caption{\tiny{\url{https://www.bettersafercare.vic.gov.au/resources/clinical-guidance/maternity-and-newborn-clinical-network/meconium-stained-liquor-msl-management}}}
+		\label{fig:endo1}
+		
+	\end{subfigure}%
+	\hfill
+	\begin{subfigure}{0.5\textwidth}
+		\includegraphics[width =\linewidth]{cuff_uncuff_plain.jpg}
+		\caption{{\tiny\url{https://www.howequipmentworks.com/tracheal_tubes/}}}
+		\label{fig:endo2}
+	\end{subfigure}
+	
+	\caption[Endotracheal Intubation]{Endotracheal Intubation. (a) The intubation process. (b1)Uncuffed ETT (b2) Deflated cuffed ETT, (b3) Inflated cuffed ETT}
+	\label{fig:endo}
+\end{figure}
+
+However, in recent years the superiority of the uncuffed tube has been undermined. Although the PVC/polyurethane material itself is reasonably soft, the angled cut-off tube can be quite sharp. Because it is not prevented from moving laterally by a cuff, this cut-off can scratch the mucosal airway walls and break the cilia. Uncuffed ETTs also have a higher risk of  ETT leak around the tube and deliver decreased ventilation pressures. They have also been found to be associated with more intubations in order to find the correct size, and though this data is from the child and not the neonatal population it is likely transferable \citep{thomas2016cuffed}. With each additional intubation, there is a far higher risk of complication. Additionally, the traditionally taught 'conical' shape of the airway has been called into question, with three recent studies concluding that it is shaped cylindrically, like an adults. A 2018 study found that it may be safe to used cuffed ETTs in children under 3kgs \citep{thomas2018cuffed}, but more studies need to be done to conclude that cuffed ETTs are biomechanically safer than uncuffed ETTs.\\
+
+In addition to the question of what design is safer when it comes to tube-airway mechanical interactions, there are also issues regarding the suitability of the current PVC and polyurethane composites materials of the tubes. Due to the polymer porosity, bacterial biofilm growth around and inside the tube is a consistent problem. This biofilm can cause irritation or infection of the surrounding mucosa, inducing swelling and increasing airway resistance. When the mucosal cilia has already been damaged, the problem increases as the immune system can not fully remove any infectious bacteria that drips into the airways. This has been linked to causing ventilator-associated pneumonia, a serious complication with a mortality rate of up to 48{\%} in at risk patients \citep{luo2010antimicrobial}. When the tissue itself has been abraded there is opportunity for the bacteria to purge the layers of the tissue or enter the bloodstream, which may cause severe and possibly life risking infections \citep{zur2004electron}.\\
+
+
+
+\section{Developments of material design of endotracheal tubes}
+There is a growing field of research in improving the material design of ETT's to mitigate some of these risks. Up until the 21st century, the primary focus in ETT design was achieving PVC composite bioinertia. The focus of the last 20 years has been bio-activity and antisepticism. The following section summarizes the upgrades of the 21th century, then goes on to introduce some of the modern materials and research concepts that are not necessarily market ready.
+
+\subsection{Recent history of ETT materials}
+In the 1950s plasticized PVC was been widely used in medical devices including ETTs, catheters and for blood transfusion. They were ideal thanks to their ductility, toughness, flexibility and translucency. However, these tubes had a short in-body life as over time they changed from a flexible state to being brittle. It was found that this phenomenon was due to the plasticizer leaching out of the tube and into the body. Research determined that this had many negative side effects. Some examples of plasticizers and their side effects include: \textit{dioctylphthalate} which caused contamination of blood platelets, \textit{organotin} which caused inflammation and necrosis of muscle, and \textit{zinc} which caused protein poisoning. Therefore, high molecular weight plasticizers became the standard as they were found to reduce this leaching and toxicity \citep{singh1992}. \\
+
+PVC continued to be the material of choice for ETTs throughout the later 20th century and polyurethane also became popular as it is easier to form narrower tubes with it. Many experiments were performed to increase their biocompatibility. These included:
+
+\begin{itemize}
+\item{{\bf{Grafting}} involves grafting PVC/polyurethane to hydrophilic monomers such as acrylic acid or methacrylic acid in order to decrease the hydrophilicity of the tubes and reduce fluid build up and tube blockage.}
+\item{{\bf{Plasma treatment} involves using plasma to treat the surface of the PVC/polyurethane to make it more bio-interactive and therefore less irritable to the body. However, this can sometimes have the unintentional side-effect of increasing opportunity for bacterial growth.\citep{singh1992}}}
+\end{itemize}
+
+
+
+\subsection{Ongoing developments of ETT materials}
+The following list contains three examples of modern research into improving ETT materials.
+
+\begin{itemize}
+\item{{\bf{Incorporation of catationic steroidal antimicrobials (CSAs)}} has been proposed by patent as a means of not only creating an environment where bacteria can not grow, but also because CSAs have been shown to encourage tissue healing. It is proposed that CSA compounds are mixed with the polymeric material and therefore become a part of the ETT structure \citep{genberg2017novel}}
+\item{{\bf{Polyurethane-Iodine complexes}} have been explored due to iodine's proficiency as an antimicrobial agent, and its ability to bind strongly to polyurethane. The new material evoked potent antimicrobial activity against gram-negative and gram-positive bacteria, fungi and viruses. It also inhibited ETT surface biofilm formation. Antimicrobial potency was proportional to iodine binding. The material was tested on rat skin cells and caused no damage. It is yet to be tested clinically \citep{luo2010antimicrobial}.}
+\item{{\bf{A self-cleaning and sterilizing ETT design}} has been proposed by patent. It involves combining an ETT and a suction catheter. The suction catheter decreases the tendency of mucus and bacteria to adhere to the inner surface of the ETT. It is proposed that both ETT and catheter surfaces are hydrophobic to repel moisture which would encourage outer surface bacterial growth. Alternately, it is proposed that the ETT and catheter have an antimicrobial photocatylyst coated lumen and the ETT has a fiberoptic cable mounted in it. \citep{rao2013self}}
+
+\end{itemize}
+
+
+\section{Conclusion}
+This case study has provided the reader with a brief overview of the practice of endotracheal intubation in neonates. From the perspective of biomechanical interaction, the jury is still out on whether using cuffed or uncuffed tubes carries less risk. In either case, the forces applied to the mucosal cell layer of the airway can cause subglottic stenosis and inflammation which results in airway narrowing. From the biomaterial perspective, we see that ETTs also carry the risk of breeding bacteria which, in combination to the damage caused to the airway cilia, can lead to tissue infection or pneumonia. Thankfully however, modern ETTs do not appear to leach dangerous plasticizers into the body as they used to. Hopefully with more research and clinical trials, ETTs may no longer pose a risk of incubating infection, and the cusp discussion may be resolved, leading to more directed research into better ETT design for the reduction of applying adverse forces to the airway. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+%Chapter 6, case study 2 --------------------------------------------------------------------------------------
+\chapter{Case Study Two: Regulations in the Medical Device Industry: The GHTF and The Predicate Problem}
+
+So far, this thesis has made very clear that regulation in the neonatal respiratory medical device industry area is in need of improvements. Unsurprisingly, many of the issues previously mentioned including the "grandfathering of Standards", devices skipping regulatory test stages via recommendations from a clinician or similarity to another product, and, general lack of thoroughness of Standard design, exist for other forms of medical device too. On a world scale, additional complexities arise due to the different regulations set by different States. Therefore, it is not uncommon that a device may pass Standards and be permitted for human use in one country but not another. In this Case Study, we first explore the World Health Organizations attempt to unify Standards across the world via the Global Harmonisation Task force (GHTF). We survey their purpose and what they identify to be important factors of medical device safety assurance. In the second part of this Case Study, we identify an issue that still plagues the medical device industry in spite of the GHTF: \textit{}predicate creep. We survey what \textit{predicate creep} is and examples of how it has caused major disasters for the health of patients and the reputation of the medical device industry.\\
+
+
+The GHTF is a limb of the World Health Organization body which was formed in 2003 with the purpose of guiding the development and modification of the medical device regulatory systems of its member states. Most medical devices are used globally, therefore it is in the interest of public health to harmonize Standards. The GHTF was developed under the ideal of there being one unifying legislation across the world, though it is recognised that this ideal can not be met as "one single template will not meet the needs of every country" as some countries have "production facilities that will require goods manufacturing practice and complex quality controls", whilst others "may depend principally on the donation of equipment... and need different policies to protect their population against unsafe and inappropriate technology" \citep{cheng2003}. The committee is formed by mainly by representatives from national medical device authorities  of member states. Member states directly involved in orchestrating the decisions of this body are the USA, European Union, Australia, Canada and Japan . Other countries including Russia, China, Brazil and India are not presently part of this body though efforts are being made to align their regulations with those set by the GHTF and ISO. The primary means by which the goals of the GHTF are accomplished are by the publication and dissemination of guidance documents for basic regulatory practices \citep{cheng2003}. The GHTF is not the International Organization of Standardization (ISO), but they do work with them to maintain that the standards ensure the safety, reliability and performance of products. ISO Standards are not mandatory in and of themselves, but are made mandatory when they are mandated by a regulatory or legal body. Most countries do treat the ISO Standards as the basis for their own regulations. According to a products conformity to the Standards, the product may display a certification mark allowing it to be market available in many jurisdictions. Figure \ref(fig:standards) outlines the typical process by which the ISO develops Standards. \\
+
+\begin{figure}	
+		\centering
+		\includegraphics[width=0.5\textwidth]{standards_process.PNG}
+		\caption[Process of designing Regulatory Standards]{Typical Process for Standards Development \citep{cheng2003}} 
+		\label{fig:standards}	
+	
+\end{figure}
+
+As mentioned previously in this thesis, the purpose of regulations are to ensure the safe and effective treatment of patients and to give consumers access to beneficial technology as quickly as possible. According to the WHO document titled \textit{Medical Device Regulations: Global overview and guiding principles}, medical device safety assurance has several essential elements. These features are: risk management, assessing effectiveness of medical devices, safety across phases in the life span of a medical device, and, responsibilities of stakeholders.  
+
+\begin{description}
+	\item[Medical device safety and risk management.] Device safety can never be guaranteed as inherently all devices carry a degree of risk and are capable of causing harm to a patient or user under the right circumstances. These circumstances may be patient specific. For example, a patient may benefit from a pacemaker and all tests on that pacemaker may point towards it working correctly, being biocompatible etc. However, the implantation procedure for pacemakers is high risk as is housing an implant within the body, and the patient may not be able to survive it. The current approach to estimating the potential of a device to be unsafe is by means of a risk assessment. Risk assessments are inherently subjective. The GHTF recommends that therefore device risk assessments are carried out by a panel of medical specialists and other relevant experts, such as biomedical engineers. In many regulatory jurisdictions, medical devices are placed into classes according to its risk assessment. For example, in Australia medical devices are classed into the following; class I (low risk), class I-supplied sterile (low medium risk), class I - incorporating a measuring device (low medium risk), class IIa (medium risk), class IIb (medium high risk), class III (high risk) and Active Implantable Medical Devices (high risk). The United States on the other hand has classes I-III from low to high risk, and Humanitariam use devices. The device class guides the stringency of tests set out by the regulatory body that a device must pass before approval \citep{cheng2003, gupta2016medical}.
+	\item[Effectiveness and performance of a medical device.]  A device is termed \textit{clinically effective} when it "produces the effect indended by the manufacturer relative to the medical condition" \citep{cheng2003}. \textit{Performance} includes clinical effectiveness, but also additional features of the device (eg, an alarm) that don't impact patient outcome but do have other uses. Effectiveness and performance are required to ensure medical device safety.
+	\item[Phases in the life span of a medical device.] A medical device goes through the following phases. (1) Conception and Development, (2) Manufacture, (3) Packaging and labelling, (4) Advertising, (5) Sale, (6) Use, and (7) Disposal. At each of these stages, risks must be mitigated to ensure the overall safety of the device. For example, it is important to ensure biohazards are not introduced or can not be introduced during the packaging stage. Similarly, it is important to consider how a device can be disposed of so as to not be an available biohazard that can be touched by waste handlers or the public, or can not infiltrate soils and water etc. Advertising and labelling must be clear and truthful to mitigate the risk of improper usage. 	
+	\item[The role of each stakeholder.] There are three primary stakeholders that play a critical role in ensuring the safety of a medical device. These are the manufacturer, the vendor, and the user. The manufacturer must ensure that the device meets or exceeds the required standards for safety and performance across the development, manufacture and packaging/labeling stage.  It is the responsibility of the manufacturer to not only mitigate dangers to the patient, but also the opportunity for accidental 'user error'. It is the responsibility of the vendor to sell the device within the requirements set by the manufacturer (for example, storage time and temperature), and to be truthful in advertising. The vendor is responsible for facilitating after-sale service to maintain the ongoing safety of the device. The user is responsible for ensuring that they have the qualifications and correct conditions (eg, a sterile operating theatre) for usage of the device. They are required to use the device within the manufacturers specifications. 
+In addition, there are two secondary stake-holders. These are the public and the government. The public are the beneficiary of devices and are responsible for complying with correct device operating procedures. Finally, the government is responsible for setting the jurisdiction for each of the stakeholders. They ensure user safety and protect the liability of the other vendors through law and punishment. They must stay on top of technology as it advances and change the laws appropriately. Ultimately, the responsibility for ensuring medical device safety is shared (see Figure \ref{fig:ideal}  \citep{cheng2003}).
+
+\end{description}
+
+\begin{figure}
+		\center
+		\includegraphics[width=0.8\textwidth]{idealConditions.PNG}
+	\caption[Regulatory Conditions]{Ideal conditions for ensuring the safety and performance of medical devices \citep{cheng2003}}\label{fig:ideal}
+\end{figure}
+
+
+Though the harmonization of medical device regulations is an important objective, there remain major issues with medical device regulation that must be scrutinized in order to truly protect consumer safety worldwide. Indeed, in recent times there has been increased recall of medical devices \citep{gupta2016medical}. This may well be an outcome of more stringent auditing and better reporting practices, but it also obviously demonstrates that devices are being used with humans that should never have been. One of the major issues is \textit{predicate creep}. \textit{Predicate creep} occurs when a number of devices are considered to meet regulatory standards based on similarity to another device that exists on the market in succession to one another. By the time there are, say, 10 devices in this series that have passed regulations without testing, there is barely any similarity between the first and the tenth device. Therein lies the danger of \textit{predicate creep} as that final device has essentially never been tested to assure safety. The most famous case of this phenomenon and its aftermath is that of the \textit{vaginal/pelvic mesh}, though there are many others including the case of silicon breast implants and metal-on-metal artificial hip implants. The extremity of this case was the impetus for changes to regulation that continue to this day. The following paragraphs explore the pelvic mesh case and how it occurred in spite of regulations as a demonstration of why and how methods of medical device regulation and jurisdiction requires drastic improvements.\\
+
+
+Transvaginal mesh devices were initially classed as class II under the USA's FDA  system and therefore were eligible for approval under the 510(k) system \citep{heneghan2017trials}. This system permits vendors to claim their device is "substantially equivalent" to a device already on the market, including up until 2016, recalled devices \citep{ho2014fixing}. In Australia, as in Europe, vendors can apply to have devices approved via proxy of passing the USA's 510(k) system according to what the TGA describe as a "risk based approach" assessed by "experts" in the field \citep{tga}. As a result of their low class and the 510(k) process, these devices were implanted in many women for treatment of pelvic organ prolapse and stress urinary incontinence worldwide. Though there is evidence showing that mid-urethral slings, the category under which vaginal meshes fall, are effective, their have been a significant number of serious complications with the vaginal mesh that could have been avoided had they not been allowed to bypass proper regulatory testing. Serious adverse effects include vaginal erosions, infections and organ perforation \citep{heneghan2017trials}. The first warning about vaginal meshes was released in 2011, though devices were not recalled from Australia and other governance members of the GHTF until April 2019.\\
+
+
+A study by Mahtani et al. \citep{heneghan2017transvaginal} traced the marketing clearance for 61 mesh devices that had gained market access through a chain of equivalence and found that the only two unique originating devices that were made to pass all standards were approved in 1985 and 1996. They found no evidence for any new clinical trial data at the time of device approval for all 61 devices, with empirical evidence of effectiveness from randomised trials emerging on average five years after approval with a range of up to fourteen years. The danger of predicate creep should have first been realised when an earlier device, the Protegan sling which was made from polyester was recalled from the market. This device was a not only a predicate for more modern devices, but modern devices were not even made from the same material. They were made from polypropylene and yet still passed the 510(k) procedures. It is worth noting that the 510(k) process is not necessarily void of any clinical testing, however, the clinical tests applied to these devices are not rigorous enough. All meshes are required to undergo 48 hours of \textit{in vivo} animal testing to observe for biocompatability and dangerous side effects. Mahtani et al. reflect that "such studies are unlikely to reflect the benefit-harm profile of implantable devices that remain in humans for decades". Additionally, it is uncertain to what extent the movement of a device in an animal such as a rodent is indicative of how it will behave in a human. In spite of the 2016 decision of the FDA to change the class of vaginal meshes from class II to class III in order to force new devices to undergo more thorough testing, the devices that have not been recalled from the market will not be forced to be retested, leaving it to time and findings of patient harm before adverse effects can be identified. Furthermore, a three year transition period is in place before the class III rules come into force which does not expire until May 2020. Clearly, not only do current regulations permit \textit{predicate creep}, they also do not act fast enough on existing adverse events caused by the phenomenon.\\
+
+In summary, it is clear that while regulation of medical devices is moving towards unification to ensure the same standard of care for patients worldwide, pertinent issues such as \textit{predicate creep} still plague the system. There is no point in harmonisation if the harmonised Standards permit dangerous therapies to be provided to the general public.
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+%end figure
+
+
+%Chapter 7, overall discussion ---------------------------------------------------------------------------
+\chapter{Overall Discussion and Conclusions}
+future directions and stuff
+
+
+
+%Chapter 8. whs ---------------------------------------------------------------------------
+
+
+
+\chapter{Work Health and Safety Issues}
+
+\section{Overview}
+The \textit{Work Health and Safety Act, 2011} \cite{whs2011} details the right of an employee or contracted worker to safety in the workplace and the responsibilities and duties of workers and officers in a workplace. Health and safety risks are managed under an approved code in this act, under \textit{Section 274}, named the \textit{Code of Practice: How to Manage Work Health and Safety Risks} \cite{whs2011}.
+In accordance with this code, all of my undertakings within the workplace at Westmead Hospital have been considered and a risk assessment has been undertaken. The purpose of carrying out a risk assessment is to identify hazards I may encounter in my work, assess their risk, and then to control those risks before pursuing said risky activities. Control measures must be lasting and may require regular assessment to ensure their performance. Hazards may be associated with the physical work environment, equipment and materials used, and work tasks that are physical or experimental in nature.
+
+It has been deemed by myself and safety officers that the nature of the risks involved in my work are acceptable. All actions required to mitigate identified risks have been taken and will continue to be taken as necessary.
+\section{Risk Assessment}
+
+% Please add the following required packages to your document preamble:
+% \usepackage{booktabs}
+% \usepackage{graphicx}
+\begin{table}[]
+\centering
+\caption{Workplace Risk Assessment}
+\label{tab:ra}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}llllllll@{}}
+\toprule
+\textbf{Hazard} & \textbf{Harm} & \textbf{Likelihood} & \textbf{Severity} & \textbf{Risk} & \begin{tabular}[c]{@{}l@{}}\textbf{Mitigation}\\ \textbf{Method}\end{tabular} & \begin{tabular}[c]{@{}l@{}}\textbf{Actioned} \\ \textbf{by}\end{tabular} & \textbf{Actioned} \\ \midrule
+\begin{tabular}[c]{@{}l@{}}Scissors, \\ knives, \\ scalpels\end{tabular} & \begin{tabular}[c]{@{}l@{}}Can slice \\ skin\end{tabular} & Unlikely & \begin{tabular}[c]{@{}l@{}}Negligible\\ injury\end{tabular} & Low & \begin{tabular}[c]{@{}l@{}}Take\\ caution,\\ cut away \\ from body\end{tabular} & \begin{tabular}[c]{@{}l@{}}Corinne\\ Gard\end{tabular} & ongoing \\ \midrule
+\begin{tabular}[c]{@{}l@{}}Electrical \\ machines\end{tabular} & \begin{tabular}[c]{@{}l@{}}If dysfunc\\ -tional, \\ may cause \\ electrocution\end{tabular} & \begin{tabular}[c]{@{}l@{}}Highly\\ Unlikely\end{tabular} & \begin{tabular}[c]{@{}l@{}}Major\\ injury\end{tabular} & Med & \begin{tabular}[c]{@{}l@{}}Ensure \\ equipment \\ is not \\ beyond \\ service date\end{tabular} & \begin{tabular}[c]{@{}l@{}}Corinne\\ Gard,\\ Murray\\ Hinder\end{tabular} & ongoing \\ \midrule
+\begin{tabular}[c]{@{}l@{}}Sitting for \\ long  hours\end{tabular} & \begin{tabular}[c]{@{}l@{}}Injury to\\ back, \\ hips and/or\\ neck\end{tabular} & Likely & \begin{tabular}[c]{@{}l@{}}Minor\\ injury\end{tabular} & Med & \begin{tabular}[c]{@{}l@{}}Take \\ regular \\ breaks to\\ walk\end{tabular} & \begin{tabular}[c]{@{}l@{}}Corinne\\ Gard\end{tabular} & ongoing \\ \midrule
+\begin{tabular}[c]{@{}l@{}}Working at \\ computer\end{tabular} & \begin{tabular}[c]{@{}l@{}}Eye strain \\ and/or\\ neck strain\end{tabular} & \begin{tabular}[c]{@{}l@{}}Highly\\ Likely\end{tabular} & \begin{tabular}[c]{@{}l@{}}Minor\\ injury\end{tabular} & High & \begin{tabular}[c]{@{}l@{}}Wear \\ computer\\ glasses, \\ take \\ regular\\ breaks\end{tabular} & \begin{tabular}[c]{@{}l@{}}Corinne\\ Gard\end{tabular} & ongoing \\ \midrule
+\begin{tabular}[c]{@{}l@{}}Liquid \\ silicon \\ rubber\end{tabular} & \begin{tabular}[c]{@{}l@{}}Solvent in \\ liquid \\ silicon can be\\ dangerous.\\ Accidental \\ ingestion or \\ bio-\\ accumulation\\ by breathing \\ and/or\\ touching has \\ been linked\\ to cancer\\ and\\ endocrine\\ disruption.\end{tabular} & \begin{tabular}[c]{@{}l@{}}Highly\\ Unlikely\end{tabular} & \begin{tabular}[c]{@{}l@{}}Major\\ injury\end{tabular} & Med & \begin{tabular}[c]{@{}l@{}}Wear \\ gloves, \\ keep face \\ away \\ from\\ glue, \\ replace \\ cap after\\ use\end{tabular} & \begin{tabular}[c]{@{}l@{}}Corinne\\ Gard\end{tabular} & ongoing \\ \bottomrule
+\end{tabular}%
+}
+\end{table}
+
+%Refs -------------------------------------------------
+\bibliography{mybib}
+
+
+
+
+
+
+%appendix ------------------------------------------------
+\appendix
+
+
+%---GV-------------------
+
+\chapter{Appendix for Core Study One}
+\section{Code for GINA VALIDATOR}
+\label{appendix:A}
+
+%File Validator
+%\subsection{FileValidator code}
+%\resizebox{\textwidth}{!}{\lstinputlisting[style = Matlab-editor]{FileValidator.m}}
+%\lstinputlisting[style = Matlab-editor]{FileValidator.m}
+\includepdf[page = {-}]{FV_pdf}
+
+%main
+%\subsection{Main code}
+%\lstinputlisting[style = Matlab-editor]{main.m}
+\includepdf[page = {-}]{main_pdf}
+
+%Tester
+%\subsection{Tester code}
+%\lstinputlisting[style = Matlab-editor]{Tester.m}
+\includepdf[page = {-}]{Tester_pdf}
+
+%BlandAltman
+%\subsection{BlandAltman code}
+For BlandAltman code, see post: \url{https://au.mathworks.com/matlabcentral/fileexchange/24645-bland-altman-plot}
+
+\section{Manual for GINA VALIDATOR}
+\label{appendix:GV}
+\includepdf[page = {-}]{GINA-VALIDATOR-MANUAL}
+
+
+%---GA-----
+
+\chapter{Appendix for Core Study Two}
+\section{Code for GINA ANALYSER}
+\label{appendix:B}
+
+%\subsection{GINA Analyser code}
+%\lstinputlisting[style = Matlab-editor]{GINA_Analyser.m}
+\includepdf[page = {-}]{GA_pdf}
+
+%\subsection{GA main code}
+%\lstinputlisting[style = Matlab-editor]{ga_main.m}
+\includepdf[page = {-}]{ga_main_pdf}
+
+%\subsection{GATester code}
+%\lstinputlisting[style = Matlab-editor]{GA_Tester.m}
+\includepdf[page = {-}]{GA_Tester_pdf}
+
+
+For exOpen code, see post: \url{https://au.mathworks.com/matlabcentral/answers/93885-how-can-i-determine-if-an-xls-file-is-open-in-microsoft-excel-without-using-dde-commands-using-mat#answer_103236}
+
+\section{Manual for GINA ANALYSER}
+\label{appendix:GA}
+\includepdf[page={-}]{GINA_ANALYSER_MANUAL}
+
+\chapter{Appendix for additional work}
+\label{appendix:C}
+\section{My design recommendations for GINAs update}
+\includepdf[page={-}]{schallerEmail}
+
+\chapter{Work Log}
+\section{Code Repository}
+To access the GitHub version control repository for the GINA ANALYSER code, please use this link: \url{ https://github.com/Corinne12345/File-Analyser.git} \\
+To access the GitHub version control repository for the GINA VALIDATOR code, please use this link: \url{https://github.com/Corinne12345/Ventilator-Validator.git} \\
+
+
+
+
+
+
+
+
+
+
+
+
+\end{document}
